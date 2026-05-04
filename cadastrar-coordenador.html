@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGAC - Cadastrar Coordenador</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="dashboard-body">
+    <main class="content">
+        <header class="top-bar">
+            <h1>Novo Cadastro de Coordenador</h1>
+            <p>Preencha os dados abaixo para registrar o coordenador.</p>
+        </header>
+
+        <section class="main-table" style="max-width: 900px; margin-top: 20px;">
+            <form id="formCadastroCoordenador">
+
+                <div class="field-group">
+                    <label for="nomeCoordenador">Nome Completo</label>
+                    <input type="text" id="nomeCoordenador" required>
+                </div>
+
+                <div class="field-group" style="margin-top: 15px;">
+                    <label for="emailCoordenador">E-mail</label>
+                    <input type="email" id="emailCoordenador" required>
+                </div>
+
+                <div class="field-group" style="margin-top: 15px;">
+                    <label for="cursoCoordenador">Curso</label>
+                    <select id="cursoCoordenador">
+                        <option value="ADS">ADS</option>
+                        <option value="ADM">Administração</option>
+                        <option value="DG">Design Gráfico</option>
+                    </select>
+                </div>
+
+                <div style="display: flex; gap: 15px; margin-top: 30px;">
+                    <button type="submit" class="btn-access" style="flex: 2;">
+                        Salvar Coordenador
+                    </button>
+
+                    <button type="reset" class="btn-analisar" style="flex: 1;">
+                        Limpar
+                    </button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <script src="main.js"></script>
+</body>
+</html>

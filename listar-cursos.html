@@ -11,12 +11,18 @@
 </head>
 <body class="iframe-body">
     <main class="content">
+
         <header class="top-bar" style="display: flex; justify-content: space-between; align-items: center;">
             <div>
                 <h1>Cursos</h1>
                 <p>Gerencie os cursos oferecidos pela instituição.</p>
             </div>
-            <button class="btn-access" onclick="window.location.href='cadastrar-curso.html'" style="margin: 0; width: auto; padding: 12px 25px;">
+
+            <button
+                class="btn-access only-admin"
+                onclick="window.location.href='cadastrar-curso.html'"
+                style="margin: 0; width: auto; padding: 12px 25px;"
+            >
                 <i class="fa-solid fa-plus"></i> Novo Curso
             </button>
         </header>
@@ -32,6 +38,7 @@
                         <th>Ações</th>
                     </tr>
                 </thead>
+
                 <tbody>
                     <tr>
                         <td>01</td>
@@ -39,7 +46,13 @@
                         <td>2.000h</td>
                         <td>Marcello Ramalho</td>
                         <td>
-                            <button title="Editar" style="border:none; background:none; color:#0a2540; cursor:pointer;"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button
+                                title="Editar"
+                                class="only-admin"
+                                style="border:none; background:none; color:#0a2540; cursor:pointer;"
+                            >
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
                         </td>
                     </tr>
 
@@ -49,12 +62,21 @@
                         <td>1.600h</td>
                         <td>Ludmilla Silva</td>
                         <td>
-                            <button title="Editar" style="border:none; background:none; color:#0a2540; cursor:pointer;"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button
+                                title="Editar"
+                                class="only-admin"
+                                style="border:none; background:none; color:#0a2540; cursor:pointer;"
+                            >
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </section>
+
     </main>
+
+    <script src="main.js"></script>
 </body>
 </html>

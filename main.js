@@ -119,43 +119,104 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================
     const listaAlunos = document.getElementById('listaAlunos');
 
-    if (listaAlunos) {
-        listaAlunos.innerHTML = '';
+if (listaAlunos) {
+    listaAlunos.innerHTML = '';
 
-        const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-        const cursos = JSON.parse(localStorage.getItem('cursos')) || [];
-        const alunoCurso = JSON.parse(localStorage.getItem('alunoCurso')) || [];
+    const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+    const cursos = JSON.parse(localStorage.getItem('cursos')) || [];
+    const alunoCurso = JSON.parse(localStorage.getItem('alunoCurso')) || [];
+    const certificados = JSON.parse(localStorage.getItem('certificados')) || [];
 
-        const alunos = usuarios.filter((u) => u.tipo === 'aluno');
+    const alunos = usuarios.filter((u) => u.tipo === 'aluno');
 
-        if (alunos.length === 0) {
-            listaAlunos.innerHTML = `
-                <tr>
-                    <td colspan="5" style="text-align:center; padding:20px;">
-                        Nenhum aluno cadastrado.
-                    </td>
-                </tr>
-            `;
+    if (alunos.length === 0) {
+        listaAlunos.innerHTML = `
+            <tr>
+                <td colspan="5" style="text-align:center; padding:20px;">
+                    Nenhum aluno cadastrado.
+                </td>
+            </tr>
+        `;
+    }
+
+    alunos.forEach((aluno) => {
+
+        // =========================
+        // CURSO
+        // =========================
+        const vinculo = alunoCurso.find((v) => v.id_aluno === aluno.id);
+        const curso = cursos.find((c) => c.id === vinculo?.id_curso);
+
+        // =========================
+        // CÁLCULO DE HORAS
+        // =========================
+        const certificadosAluno = certificados.filter(
+            (c) => c.alunoId === aluno.id && c.status === 'aprovado'
+        );
+
+        const horasConcluidas = certificadosAluno.reduce(
+            (total, cert) => total + (Number(cert.cargaHoraria) || 0),
+            0
+        );
+
+        const totalHoras = 100; // 🔥 pode mudar depois para dinâmica
+
+        const porcentagem = Math.min(
+            (horasConcluidas / totalHoras) * 100,
+            100
+        );
+
+        // =========================
+        // STATUS
+        // =========================
+        let status = 'Pendente';
+        let statusClass = 'pill-pending';
+
+        if (porcentagem >= 100) {
+            status = 'Concluído';
+            statusClass = 'pill-approved';
         }
 
-        alunos.forEach((aluno) => {
-            const vinculo = alunoCurso.find((v) => v.id_aluno === aluno.id);
-            const curso = cursos.find((c) => c.id === vinculo?.id_curso);
+        // =========================
+        // RENDER
+        // =========================
+        listaAlunos.innerHTML += `
+            <tr>
+                <td>
+                    <strong style="color:#0a2540;">${aluno.nome}</strong><br>
+                    <small style="color:#94a3b8;">Matrícula: ${aluno.matricula}</small>
+                </td>
 
-            listaAlunos.innerHTML += `
-                <tr>
-                    <td>
-                        <strong style="color:#0a2540;">${aluno.nome}</strong><br>
-                        <small style="color:#94a3b8;">Matrícula: ${aluno.matricula}</small>
-                    </td>
-                    <td>${curso ? curso.nome : 'Sem curso'}</td>
-                    <td>0/100h</td>
-                    <td><span class="pill pill-pending">Pendente</span></td>
-                    <td><i class="fa-regular fa-eye"></i></td>
-                </tr>
-            `;
-        });
-    }
+                <td>${curso ? curso.nome : 'Sem curso'}</td>
+
+                <td>
+                    <div style="display:flex; flex-direction:column; gap:5px;">
+                        <small>${horasConcluidas}/${totalHoras}h</small>
+
+                        <div style="background:#e5e7eb; height:8px; border-radius:8px; overflow:hidden;">
+                            <div style="
+                                width:${porcentagem}%;
+                                height:100%;
+                                background:#22c55e;
+                                transition:0.3s;
+                            "></div>
+                        </div>
+                    </div>
+                </td>
+
+                <td>
+                    <span class="pill ${statusClass}">
+                        ${status}
+                    </span>
+                </td>
+
+                <td>
+                    <i class="fa-regular fa-eye"></i>
+                </td>
+            </tr>
+        `;
+    });
+}
 
     // =========================
     // LISTAR CURSOS

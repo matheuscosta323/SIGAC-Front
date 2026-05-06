@@ -15,6 +15,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =========================
+    // 🔥 LOGS
+    // =========================
+    function registrarLog(acao, certificado) {
+
+        const logs = JSON.parse(localStorage.getItem('logs')) || [];
+        const nomeUsuario = localStorage.getItem('nomeUsuario') || 'Usuário';
+
+        const novoLog = {
+            usuario: nomeUsuario,
+            acao,
+            certificado,
+            data: new Date().toLocaleString()
+        };
+
+        logs.push(novoLog);
+        localStorage.setItem('logs', JSON.stringify(logs));
+    }
+
+    // =========================
     // ELEMENTOS
     // =========================
     const listaCertificados = document.getElementById('listaCertificados');
@@ -114,7 +133,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 cert.status = 'aprovado';
                 salvarCertificados();
 
-                // ENVIA EMAIL
+                registrarLog('aprovou o certificado', cert.titulo);
+
                 if (cert.emailAluno) {
                     await enviarEmailAprovacao(cert.emailAluno, cert.aluno);
                 }
@@ -131,11 +151,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 cert.status = 'rejeitado';
                 salvarCertificados();
 
-                // ENVIA EMAIL
+                registrarLog('rejeitou o certificado', cert.titulo);
+
                 if (cert.emailAluno) {
                     await enviarEmailRecusa(
-                        cert.emailAluno, 
-                        cert.aluno, 
+                        cert.emailAluno,
+                        cert.aluno,
                         motivo || 'Não informado'
                     );
                 }
@@ -148,7 +169,17 @@ document.addEventListener('DOMContentLoaded', () => {
             // =========================
             if (btn.classList.contains('btn-view')) {
                 if (cert.arquivo) {
-                    window.open(cert.arquivo, '_blank');
+
+                    const novaJanela = window.open();
+
+                    if (cert.arquivo.startsWith('data:image')) {
+                        novaJanela.document.write(`
+                            <img src="${cert.arquivo}" style="width:100%">
+                        `);
+                    } else {
+                        novaJanela.location.href = cert.arquivo;
+                    }
+
                 } else {
                     alert('Arquivo não disponível');
                 }
@@ -159,10 +190,17 @@ document.addEventListener('DOMContentLoaded', () => {
             // =========================
             if (btn.classList.contains('btn-download')) {
                 if (cert.arquivo) {
+
                     const link = document.createElement('a');
                     link.href = cert.arquivo;
-                    link.download = cert.titulo + '.pdf';
+
+                    let extensao = 'pdf';
+                    if (cert.arquivo.startsWith('data:image/png')) extensao = 'png';
+                    if (cert.arquivo.startsWith('data:image/jpeg')) extensao = 'jpg';
+
+                    link.download = `${cert.titulo}.${extensao}`;
                     link.click();
+
                 } else {
                     alert('Arquivo não disponível');
                 }
@@ -200,9 +238,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const aluno = prompt('Nome do aluno:');
             if (!aluno) return;
 
-            const emailAluno = prompt('Email do aluno:'); // 🔥 importante
-
-            const arquivo = prompt('URL do arquivo (PDF/imagem):');
+            const emailAluno = prompt('Email do aluno:');
+            const arquivo = prompt('URL do arquivo (PDF ou imagem):');
 
             const novoCertificado = {
                 id: Date.now(),
@@ -215,6 +252,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             certificados.push(novoCertificado);
             salvarCertificados();
+
+            registrarLog('criou o certificado', titulo);
 
             atualizarContadores();
 

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGAC - Coordenadores</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body class="dashboard-body">
+    <main class="content">
+        <header class="top-bar" style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                <h1>Coordenadores</h1>
+                <p>Gerencie os coordenadores cadastrados.</p>
+            </div>
+
+            <button
+                class="btn-access only-admin"
+                onclick="window.location.href='cadastrar-coordenador.html'"
+                style="width:auto; margin:0;"
+            >
+                <i class="fa-solid fa-plus"></i> Novo Coordenador
+            </button>
+        </header>
+
+        <section class="main-table" style="margin-top: 30px;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>NOME</th>
+                        <th>E-MAIL</th>
+                        <th>MATRÍCULA</th>
+                        <th>TIPO</th>
+                    </tr>
+                </thead>
+
+                <tbody id="listaCoordenadores">
+                    <!-- preenchido via JS -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+/* Ajustes de layout para a área de conteúdo */
+.content {
+    padding: 30px !important;
+    display: block !important; /* Garante que o container não herde flex indesejado */
+}
+
+/* Estilização dos Cards de Certificado */
+.cert-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+}
+
+/* Grid de informações (Área, Carga, Data, Arquivo) */
+.cert-details-grid {
+    display: grid !important;
+    grid-template-columns: 2fr 1fr 1fr 2fr !important; /* Mantém as 4 colunas alinhadas */
+    gap: 15px;
+    margin: 20px 0;
+    padding: 15px 0;
+    border-top: 1px solid #f1f5f9;
+}
+
+.detail-item label {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.detail-item p {
+    margin: 0;
+    color: #1e293b;
+    font-weight: 500;
+}
+
+/* Status e Badges */
+.status-pill.pending {
+    background: #fef3c7;
+    color: #92400e;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+/* Ações e Botões */
+.cert-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 15px;
+}
+
+.btn-ui {
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s;
+}
+
+.btn-ui:hover {
+    background: #f8fafc;
+}
+
+.btn-approve {
+    background: #ecfdf5;
+    color: #059669;
+    border-color: #d1fae5;
+}
+
+.btn-reject {
+    background: #fef2f2;
+    color: #dc2626;
+    border-color: #fee2e2;
+}
+
+/* Ajuste fino para títulos e textos dentro do card */
+.cert-card h3 {
+    color: #0a2540;
+    margin: 0;
+    font-family: 'Playfair Display', serif;
+}
+
+.cert-card .student-name {
+    color: #64748b;
+    margin: 5px 0 0 0;
+    font-weight: 500;
+}

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGAC - Cadastrar Coordenador</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="dashboard-body">
+    <main class="content">
+        <header class="top-bar">
+            <h1>Novo Coordenador</h1>
+            <p>Cadastre um novo coordenador.</p>
+        </header>
+
+        <section class="main-table" style="max-width: 800px; margin-top: 20px;">
+            <form id="formCadastroCoordenador">
+
+                <div class="field-group">
+                    <label for="nomeCoordenador">Nome</label>
+                    <input type="text" id="nomeCoordenador" required>
+                </div>
+
+                <div class="field-group">
+                    <label for="emailCoordenador">Email</label>
+                    <input type="email" id="emailCoordenador" required>
+                </div>
+
+                <div class="field-group">
+                    <label for="senhaCoordenador">Senha</label>
+                    <input type="password" id="senhaCoordenador" required>
+                </div>
+
+                <div class="field-group">
+                    <label for="matriculaCoordenador">Matrícula</label>
+                    <input type="text" id="matriculaCoordenador">
+                </div>
+                <div class="field-group">
+                    <label for="cursoCoordenador">Curso</label>
+                    <select id="cursoCoordenador" required>
+                    <option value="">Selecione um curso</option>
+                    </select>
+                </div>
+
+                <div style="display: flex; gap: 15px; margin-top: 30px;">
+                    <button type="submit" class="btn-access" style="flex: 2;">
+                        Salvar Coordenador
+                    </button>
+
+                    <button type="reset" class="btn-analisar" style="flex: 1;">
+                        Limpar
+                    </button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <script src="main.js"></script>
+</body>
+</html>

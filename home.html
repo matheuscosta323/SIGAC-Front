@@ -14,22 +14,30 @@
         <div class="sidebar-header">
             <h2 class="logo-main" style="color: white; font-size: 1.8rem;">SIGAC</h2>
         </div>
-        
         <nav class="menu">
-            <a href="dashboard.html" target="conteudo"><i class="fa-solid fa-house"></i> Home</a>
-            
-            <a href="listar-alunos.html" target="conteudo"><i class="fa-solid fa-users"></i> Alunos</a>
-            
-            <a href="listar-cursos.html" target="conteudo"><i class="fa-solid fa-graduation-cap"></i> Cursos</a>
-            <a href="#"><i class="fa-solid fa-file-invoice"></i> Relatórios</a>
-            
+            <a href="dashboard.html" target="conteudo">
+                <i class="fa-solid fa-house"></i> Home</a>    
+            <a href="listar-alunos.html" target="conteudo">
+                <i class="fa-solid fa-users"></i> Alunos </a>
+            <a href="listar-coordenadores.html" target="conteudo">
+                <i class="fa-solid fa-user-tie"></i> Coordenadores   </a>  
+            <a href="listar-cursos.html" target="conteudo">
+                <i class="fa-solid fa-graduation-cap"></i> Cursos </a>
+            <a href="#">
+                <i class="fa-solid fa-file-invoice"></i> Relatórios </a>
             <div style="flex-grow: 1;"></div>
-            <a href="index.html" class="logout" onclick="localStorage.clear()"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+
+            <a href="index.html" class="logout" onclick="localStorage.clear()">
+                <i class="fa-solid fa-right-from-bracket"></i> Sair
+            </a>
         </nav>
     </aside>
 
-    <iframe name="conteudo" src="dashboard.html" style="width:100%; border: none;">
-    </iframe>
+    <iframe
+        name="conteudo"
+        src="dashboard.html"
+        style="width:100%; border:none;"
+    ></iframe>
 
     <script src="main.js"></script>
 </body>

@@ -3,41 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIGAC - Listar Alunos</title>
+    <title>SIGAC - Alunos</title>
+
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="alunos.css">
+    <link rel="stylesheet" href="validacao.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icon-192.png">
 </head>
-<body class="iframe-body">
+
+<body class="dashboard-body">
     <main class="content">
-        <div class="header-flex">
-            <div>
-                <h1>Cadastro de Alunos</h1>
-                <p>Gerencie os dados dos alunos e coordenadores</p>
+        <div class="header-container">
+            <h1>Gestão de Alunos</h1>
+            <p>Acompanhamento de horas complementares</p>
+
+            <div class="action-bar">
+                <button class="btn-outline">
+                    Exportar
+                </button>
+
+                <button class="btn-outline">
+                    <i class="fa-solid fa-filter"></i> Filtros
+                </button>
+
+                <!-- botão visível para admin e coordenador -->
+                <button
+                    class="btn-access"
+                    onclick="window.location.href='cadastrar-aluno.html'"
+                    style="width: auto; margin: 0;"
+                >
+                    <i class="fa-solid fa-plus" style="color: #ffffff;"></i>
+                    Novo Aluno
+                </button>
             </div>
-            <button class="btn-access" onclick="window.location.href='cadastrar-aluno.html'" style="width: auto;">
-                <i class="fa-solid fa-user-plus"></i> Novo Aluno
-            </button>
         </div>
 
-        <div class="tabs-container">
-            <span class="tab-item">Coordenadores <small class="tab-count">3</small></span>
-            <span class="tab-item active">Alunos <small class="tab-count">3</small></span>
-        </div>
+        <div class="table-card">
+            <table class="students-table">
+                <thead>
+                    <tr>
+                        <th>ALUNO</th>
+                        <th>CURSO</th>
+                        <th>PROGRESSO</th>
+                        <th>STATUS</th>
+                        <th>AÇÕES</th>
+                    </tr>
+                </thead>
 
-        <div class="search-container">
-            <div class="search-wrapper">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" class="search-input" placeholder="Buscar aluno...">
-            </div>
-            <button class="btn-filter">
-                <i class="fa-solid fa-sliders"></i> Filtros
-            </button>
+                <tbody id="listaAlunos">
+                    <!-- alunos serão inseridos pelo main.js -->
+                </tbody>
+            </table>
         </div>
-
-        <section class="grid-alunos">
-            </section>
     </main>
 
     <script src="main.js"></script>

@@ -175,3 +175,55 @@ body, html {
 @media (max-width: 1024px) {
     .login-info-side { display: none; }
 }
+
+/* SELECTS */
+.field-group select {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #f8fafc;
+    font-size: 1rem;
+    color: #0a2540;
+}
+
+/* BOTÃO SECUNDÁRIO */
+.btn-analisar {
+    width: 100%;
+    padding: 16px;
+    background: #64748b;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+/* CARDS DE LISTAGEM */
+.card-aluno {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+
+.card-aluno h3 {
+    color: #0a2540;
+    margin-bottom: 10px;
+}
+
+.card-aluno p {
+    color: #64748b;
+    margin-bottom: 6px;
+    font-size: 0.95rem;
+}
+
+/* GRID DOS ALUNOS/COORDENADORES */
+.grid-alunos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGAC - Relatórios</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="validacao.css">
+    <link rel="stylesheet" href="alunos.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="relatorios.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo">SIGAC</div>
+            <nav class="menu">
+                <a href="dashboard.html"><i class="fa-solid fa-house"></i> Dashboard</a>
+                <a href="listar-alunos.html"><i class="fa-solid fa-users"></i> Alunos</a>
+                <a href="listar-cursos.html"><i class="fa-solid fa-book"></i> Cursos</a>
+                <a href="relatorios.html" class="active"><i class="fa-solid fa-chart-pie"></i> Relatórios</a>
+                <a href="validacao.html"><i class="fa-solid fa-check-to-slot"></i> Certificados</a>
+                <a href="regras-curso.html" class="only-admin"><i class="fa-solid fa-graduation-cap"></i> Regras do Curso</a>
+                
+                <div class="spacer" style="flex-grow: 1;"></div>
+                <a href="index.html" class="logout" onclick="localStorage.clear()"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+            </nav>
+        </aside>
+
+        <main class="content">
+            <header class="content-header">
+                <div>
+                    <h1>Relatórios</h1>
+                    <p>Análise completa de horas complementares</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-mini-export"><i class="fa-solid fa-download"></i> CSV</button>
+                    <button class="btn-mini-export"><i class="fa-solid fa-file-excel"></i> Excel</button>
+                </div>
+            </header>
+
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <i class="fa-solid fa-user-group"></i>
+                    <span>Total de Alunos</span>
+                    <h2 id="card-total-alunos">0</h2> <!-- ID adicionado -->
+                </div>
+                <div class="stat-card">
+                    <i class="fa-solid fa-clock"></i>
+                    <span>Total de Horas</span>
+                    <h2 id="card-total-horas">0h</h2> <!-- ID adicionado -->
+                </div>
+                <div class="stat-card">
+                    <i class="fa-solid fa-file-signature"></i>
+                    <span>Solicitações</span>
+                    <h2 id="card-total-solicitacoes">0</h2> <!-- ID adicionado -->
+                </div>
+                <div class="stat-card green">
+                    <i class="fa-solid fa-arrow-trend-up"></i>
+                    <span>Taxa de Aprovação</span>
+                    <h2 id="card-taxa-aprovacao">0%</h2> <!-- ID adicionado -->
+                </div>
+            </section>
+
+            <section class="charts-container">
+    <div class="chart-card">
+        <h3>Evolução Mensal</h3>
+        <div class="chart-wrapper"> <canvas id="evolucaoChart"></canvas>
+        </div>
+    </div>
+    <div class="chart-card">
+        <h3>Tipos de Atividades</h3>
+        <div class="chart-wrapper"> <canvas id="atividadesChart"></canvas>
+        </div>
+    </div>
+</section>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="main.js"></script>
+    <script src="relatorios.js"></script>
+</body>
+</html>

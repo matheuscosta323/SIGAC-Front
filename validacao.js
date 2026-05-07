@@ -5,18 +5,12 @@ import {
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // =========================
-    // DADOS
-    // =========================
     let certificados = JSON.parse(localStorage.getItem('certificados')) || [];
 
     function salvarCertificados() {
         localStorage.setItem('certificados', JSON.stringify(certificados));
     }
 
-    // =========================
-    // 🔥 LOGS
-    // =========================
     function registrarLog(acao, certificado) {
 
         const logs = JSON.parse(localStorage.getItem('logs')) || [];
@@ -33,9 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('logs', JSON.stringify(logs));
     }
 
-    // =========================
-    // ELEMENTOS
-    // =========================
     const listaCertificados = document.getElementById('listaCertificados');
     const tabs = document.querySelectorAll('.tab-btn');
 
@@ -45,9 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const btnCriarCertificado = document.getElementById('btnCriarCertificado');
 
-    // =========================
-    // CONTADORES
-    // =========================
+
     function atualizarContadores() {
         const pendentes = certificados.filter(c => c.status === 'pendente').length;
         const aprovados = certificados.filter(c => c.status === 'aprovado').length;
@@ -58,9 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (countRejeitado) countRejeitado.innerText = rejeitados;
     }
 
-    // =========================
-    // RENDER
-    // =========================
+
     function renderizarCertificados(status) {
 
         if (!listaCertificados) return;
@@ -113,9 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // =========================
-    // EVENTOS DOS BOTÕES
-    // =========================
+
     if (listaCertificados) {
         listaCertificados.addEventListener('click', async (e) => {
 
@@ -126,9 +111,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const cert = certificados.find(c => c.id === id);
             if (!cert) return;
 
-            // =========================
-            // APROVAR
-            // =========================
+            // botão aprovar
+
             if (btn.classList.contains('btn-approve')) {
                 cert.status = 'aprovado';
                 salvarCertificados();
@@ -142,9 +126,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Certificado aprovado!');
             }
 
-            // =========================
-            // REJEITAR
-            // =========================
+            //botão rejeitar
+
             if (btn.classList.contains('btn-reject')) {
                 const motivo = prompt('Motivo da recusa:');
 
@@ -163,10 +146,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 alert('Certificado rejeitado!');
             }
+                // botão ver certificados
 
-            // =========================
-            // VER
-            // =========================
             if (btn.classList.contains('btn-view')) {
                 if (cert.arquivo) {
 
@@ -185,9 +166,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            // =========================
-            // DOWNLOAD
-            // =========================
+            // botão download certificado
+
             if (btn.classList.contains('btn-download')) {
                 if (cert.arquivo) {
 
@@ -213,9 +193,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // =========================
-    // TABS
-    // =========================
     tabs.forEach(btn => {
         btn.addEventListener('click', () => {
 
@@ -226,9 +203,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // =========================
-    // CRIAR CERTIFICADO (DEMO)
-    // =========================
+    // criação de certificado
+
     if (btnCriarCertificado) {
         btnCriarCertificado.addEventListener('click', () => {
 
@@ -264,9 +240,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // =========================
-    // INICIALIZAÇÃO
-    // =========================
     atualizarContadores();
 
     const tabInicial = document.querySelector('.tab-btn.active');

@@ -1,17 +1,14 @@
-// email.js
+
 import emailjs from "https://cdn.jsdelivr.net/npm/@emailjs/browser@4/+esm";
 
-// Inicialização
+
 emailjs.init("l3fKuDmGH-BaAHv9o");
 
-// IDs do EmailJS
 const SERVICE_ID = "service_8fudgyp";
 const TEMPLATE_ALUNO = "template_a84pdbp";
 const TEMPLATE_COORDENADOR = "template_5npys3f";
 
-/**
- * Envia email para coordenador quando nova atividade é enviada
- */
+
 export async function avisarCoordenador(nomeAluno, curso, emailCoordenador) {
     try {
         const response = await emailjs.send(
@@ -30,9 +27,7 @@ export async function avisarCoordenador(nomeAluno, curso, emailCoordenador) {
     }
 }
 
-/**
- * Envia email de aprovação ao aluno
- */
+
 export async function enviarEmailAprovacao(emailAluno, nomeAluno) {
     try {
         const response = await emailjs.send(
@@ -52,9 +47,6 @@ export async function enviarEmailAprovacao(emailAluno, nomeAluno) {
     }
 }
 
-/**
- * Envia email de recusa ao aluno
- */
 export async function enviarEmailRecusa(emailAluno, nomeAluno, motivoRecusa) {
     try {
         const response = await emailjs.send(

@@ -4,18 +4,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     if (perfil === 'coordenador') {
-        // Agora isso vai rodar em qualquer página, inclusive na de Cursos!
         document.querySelectorAll('.only-admin').forEach(item => {
             item.style.setProperty('display', 'none', 'important');
         });
     } else if (perfil === 'admin') {
-        // Garante que o Admin veja os itens (caso o CSS tenha escondido por padrão)
         document.querySelectorAll('.only-admin').forEach(item => {
             item.style.setProperty('display', 'flex', 'important');
         });
     }
 
-    // === 1. SISTEMA DE LOGIN E CADASTRO ===
+    // SISTEMA DE LOGIN E CADASTRO
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
         loginForm.addEventListener('submit', (e) => {
@@ -78,9 +76,8 @@ document.addEventListener('DOMContentLoaded', () => {
     preencherSelectCursos('cursoAluno');
     preencherSelectCursos('cursoCoordenador');
 
-    // =========================
     // CADASTRO ALUNO
-    // =========================
+
     const formAluno = document.getElementById('formCadastroAluno');
 
     if (formAluno) {
@@ -114,9 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // =========================
     // LISTAR ALUNOS
-    // =========================
     const listaAlunos = document.getElementById('listaAlunos');
 
 if (listaAlunos) {
@@ -141,15 +136,12 @@ if (listaAlunos) {
 
     alunos.forEach((aluno) => {
 
-        // =========================
         // CURSO
-        // =========================
+
         const vinculo = alunoCurso.find((v) => v.id_aluno === aluno.id);
         const curso = cursos.find((c) => c.id === vinculo?.id_curso);
 
-        // =========================
-        // CÁLCULO DE HORAS
-        // =========================
+
         const certificadosAluno = certificados.filter(
             (c) => c.alunoId === aluno.id && c.status === 'aprovado'
         );
@@ -166,9 +158,6 @@ if (listaAlunos) {
             100
         );
 
-        // =========================
-        // STATUS
-        // =========================
         let status = 'Pendente';
         let statusClass = 'pill-pending';
 
@@ -177,9 +166,7 @@ if (listaAlunos) {
             statusClass = 'pill-approved';
         }
 
-        // =========================
-        // RENDER
-        // =========================
+
         listaAlunos.innerHTML += `
             <tr>
                 <td>
@@ -218,9 +205,8 @@ if (listaAlunos) {
     });
 }
 
-    // =========================
     // LISTAR CURSOS
-    // =========================
+
     const listaCursos = document.getElementById('listaCursos');
 
     if (listaCursos) {
@@ -249,9 +235,7 @@ if (listaAlunos) {
         });
     }
 
-    // =========================
     // LISTAR COORDENADORES
-    // =========================
 const listaCoordenadores = document.getElementById('listaCoordenadores');
 
 if (listaCoordenadores) {
@@ -259,7 +243,6 @@ if (listaCoordenadores) {
 
     const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
 
-    // 🔥 FILTRA APENAS COORDENADORES
     const coordenadores = usuarios.filter((u) => u.tipo === 'coordenador');
 
     if (coordenadores.length === 0) {
@@ -287,9 +270,7 @@ if (listaCoordenadores) {
     });
 }
 
-    // =========================
     // CADASTRO COORDENADOR
-    // =========================
     const formCoordenador = document.getElementById('formCadastroCoordenador');
 
     if (formCoordenador) {

@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
     const paginaAtual = window.location.pathname.split('/').pop() || 'index.html';
     if (paginasProtegidas.includes(paginaAtual) && !localStorage.getItem('token')) {
-        window.location.href = 'index.html';
+        window.location.href = '../../index.html';
         return;
     }
 
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Registrar Service Worker (PWA)
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js').catch(() => {});
+        navigator.serviceWorker.register('../../sw.js').catch(() => {});
     }
 });
 
@@ -70,7 +70,7 @@ function aplicarControleDeAcesso(perfil) {
 // Logout global
 function logout() {
     localStorage.clear();
-    window.location.href = 'index.html';
+    window.location.href = '../../index.html';
 }
 
 // Exibe mensagem de feedback (sucesso ou erro) num elemento

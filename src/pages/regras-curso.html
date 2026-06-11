@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Regras de Atividade - SIGAC</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="dashboard.css">
-    <link rel="stylesheet" href="validacao.css">
-    <link rel="stylesheet" href="alunos.css">
+    <link rel="stylesheet" href="../../src/css/style.css">
+    <link rel="stylesheet" href="../../src/css/dashboard.css">
+    <link rel="stylesheet" href="../../src/css/validacao.css">
+    <link rel="stylesheet" href="../../src/css/alunos.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         .regra-card { background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:20px; margin-bottom:12px; }
@@ -95,9 +95,9 @@
         <p id="msgVazia" style="color:#64748b;display:none;font-size:0.9rem;">Nenhuma regra cadastrada para este curso.</p>
     </main>
 
-    <script src="main.js"></script>
+    <script src="../../src/js/main.js"></script>
     <script type="module">
-        import { listarCursos, listarRegras, criarRegra, atualizarRegra, excluirRegra } from './api.js';
+        import { listarCursos, listarRegras, criarRegra, atualizarRegra, excluirRegra } from '../../src/js/api.js';
 
         let cursoAtual = null;
         let regrasCache = [];

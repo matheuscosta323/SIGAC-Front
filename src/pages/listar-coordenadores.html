@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SIGAC - Coordenadores</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="../../src/css/style.css">
+    <link rel="stylesheet" href="../../src/css/dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body class="dashboard-body">
@@ -39,9 +39,9 @@
         </section>
     </main>
 
-    <script src="main.js"></script>
+    <script src="../../src/js/main.js"></script>
     <script type="module">
-        import { listarCoordenadores } from './api.js';
+        import { listarCoordenadores } from '../../src/js/api.js';
 
         async function carregar() {
             const tbody = document.getElementById('listaCoordenadores');

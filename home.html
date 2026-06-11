@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SIGAC</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="src/css/style.css">
+    <link rel="stylesheet" href="src/css/dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="manifest" href="manifest.json">
     <style>
@@ -21,31 +21,31 @@
             <h2 class="logo-main" style="color:white;font-size:1.8rem;">SIGAC</h2>
         </div>
         <nav class="menu">
-            <a href="dashboard.html" target="conteudo">
+            <a href="src/pages/dashboard.html" target="conteudo">
                 <i class="fa-solid fa-house"></i> Início
             </a>
-            <a href="listar-alunos.html" target="conteudo">
+            <a href="src/pages/listar-alunos.html" target="conteudo">
                 <i class="fa-solid fa-users"></i> Alunos
             </a>
-            <a href="listar-coordenadores.html" target="conteudo" class="only-admin">
+            <a href="src/pages/listar-coordenadores.html" target="conteudo" class="only-admin">
                 <i class="fa-solid fa-user-tie"></i> Coordenadores
             </a>
-            <a href="listar-cursos.html" target="conteudo">
+            <a href="src/pages/listar-cursos.html" target="conteudo">
                 <i class="fa-solid fa-graduation-cap"></i> Cursos
             </a>
-            <a href="vincular-curso.html" target="conteudo" class="only-admin">
+            <a href="src/pages/vincular-curso.html" target="conteudo" class="only-admin">
                 <i class="fa-solid fa-link"></i> Vincular Curso
             </a>
-            <a href="regras-curso.html" target="conteudo" class="only-admin">
+            <a href="src/pages/regras-curso.html" target="conteudo" class="only-admin">
                 <i class="fa-solid fa-book"></i> Regras de Curso
             </a>
-            <a href="validacao.html" target="conteudo">
+            <a href="src/pages/validacao.html" target="conteudo">
                 <i class="fa-solid fa-check-to-slot"></i> Validação
             </a>
-            <a href="relatorios.html" target="conteudo" class="only-coordenador-admin">
+            <a href="src/pages/relatorios.html" target="conteudo" class="only-coordenador-admin">
                 <i class="fa-solid fa-chart-pie"></i> Relatórios
             </a>
-            <a href="logs.html" target="conteudo" class="only-admin">
+            <a href="src/pages/logs.html" target="conteudo" class="only-admin">
                 <i class="fa-solid fa-file-alt"></i> Logs
             </a>
             <a href="index.html" class="logout" onclick="localStorage.clear()">
@@ -54,9 +54,9 @@
         </nav>
     </aside>
 
-    <iframe name="conteudo" src="dashboard.html"></iframe>
+    <iframe name="conteudo" src="src/pages/dashboard.html"></iframe>
 
     <!-- main.js cuida de todo o controle de acesso por role -->
-    <script src="main.js"></script>
+    <script src="src/js/main.js"></script>
 </body>
 </html>

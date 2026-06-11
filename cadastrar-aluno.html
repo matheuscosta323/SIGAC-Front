@@ -4,14 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SIGAC - Cadastrar Aluno</title>
-
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/png" href="icon-192.png">
 </head>
-
 <body class="dashboard-body">
     <main class="content">
         <header class="top-bar">
@@ -19,79 +16,50 @@
             <p>Preencha os dados abaixo para registrar o aluno.</p>
         </header>
 
-        <section class="main-table" style="max-width: 900px; margin-top: 20px;">
+        <section class="main-table" style="max-width:900px;margin-top:20px;">
             <form id="formCadastroAluno">
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
                     <div class="field-group">
                         <label for="nomeAluno">Nome Completo</label>
-                        <input
-                            type="text"
-                            id="nomeAluno"
-                            placeholder="Ex: Matheus Silva"
-                            required
-                            style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0;"
-                        >
+                        <input type="text" id="nomeAluno" placeholder="Ex: Matheus Silva" required
+                            style="width:100%;padding:12px;border-radius:8px;border:1px solid #e2e8f0;">
                     </div>
-
                     <div class="field-group">
                         <label for="matriculaAluno">Matrícula</label>
-                        <input
-                            type="text"
-                            id="matriculaAluno"
-                            placeholder="2024001"
-                            required
-                            style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0;"
-                        >
+                        <input type="text" id="matriculaAluno" placeholder="2024001" required
+                            style="width:100%;padding:12px;border-radius:8px;border:1px solid #e2e8f0;">
                     </div>
                 </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:15px;">
                     <div class="field-group">
                         <label for="emailAluno">E-mail</label>
-                        <input
-                            type="email"
-                            id="emailAluno"
-                            placeholder="aluno@senac.br"
-                            required
-                            style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0;"
-                        >
+                        <input type="email" id="emailAluno" placeholder="aluno@senac.br" required
+                            style="width:100%;padding:12px;border-radius:8px;border:1px solid #e2e8f0;">
                     </div>
-
                     <div class="field-group">
                         <label for="senhaAluno">Senha</label>
-                        <input
-                            type="password"
-                            id="senhaAluno"
-                            placeholder="********"
-                            required
-                            style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0;"
-                        >
+                        <input type="password" id="senhaAluno" placeholder="********" required
+                            style="width:100%;padding:12px;border-radius:8px;border:1px solid #e2e8f0;">
                     </div>
                 </div>
 
-                <div class="field-group" style="margin-top: 15px;">
+                <div class="field-group" style="margin-top:15px;">
                     <label for="cursoAluno">Curso</label>
-                    <select
-                        id="cursoAluno"
-                        required
-                        style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; background: #fff;"
-                    >
-                        <option value="">Selecione um curso</option>
+                    <select id="cursoAluno" required
+                        style="width:100%;padding:12px;border-radius:8px;border:1px solid #e2e8f0;background:#fff;">
+                        <option value="">Carregando cursos...</option>
                     </select>
                 </div>
 
-                <div style="display: flex; gap: 15px; margin-top: 30px;">
-                    <button type="submit" class="btn-access" style="flex: 2; margin: 0;">
+                <p id="msgAluno" style="margin-top:10px;display:none;"></p>
+
+                <div style="display:flex;gap:15px;margin-top:30px;">
+                    <button type="submit" class="btn-access" id="btnSalvarAluno" style="flex:2;margin:0;">
                         <i class="fa-solid fa-floppy-disk"></i> Salvar Aluno
                     </button>
-
-                    <button
-                        type="button"
-                        class="btn-analisar"
-                        onclick="history.back()"
-                        style="flex: 1; background: #64748b;"
-                    >
+                    <button type="button" class="btn-analisar" onclick="history.back()" style="flex:1;background:#64748b;">
                         Cancelar
                     </button>
                 </div>
@@ -100,5 +68,56 @@
     </main>
 
     <script src="main.js"></script>
+    <script type="module">
+        import { listarCursos, cadastrarUsuario } from './api.js';
+
+        // Carrega cursos no select
+        async function carregarCursos() {
+            const select = document.getElementById('cursoAluno');
+            try {
+                const data = await listarCursos();
+                select.innerHTML = '<option value="">Selecione um curso</option>';
+                (data.cursos || []).forEach(c => {
+                    select.innerHTML += `<option value="${c.id}">${c.nome}</option>`;
+                });
+            } catch {
+                select.innerHTML = '<option value="">Erro ao carregar cursos</option>';
+            }
+        }
+
+        carregarCursos();
+
+        document.getElementById('formCadastroAluno').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnSalvarAluno');
+            const msg = document.getElementById('msgAluno');
+            btn.disabled = true;
+            btn.textContent = 'Salvando...';
+            msg.style.display = 'none';
+
+            try {
+                await cadastrarUsuario({
+                    nome: document.getElementById('nomeAluno').value,
+                    email: document.getElementById('emailAluno').value,
+                    senha: document.getElementById('senhaAluno').value,
+                    tipo: 'aluno',
+                    matricula: document.getElementById('matriculaAluno').value,
+                    id_curso: Number(document.getElementById('cursoAluno').value)
+                });
+                msg.style.color = '#16a34a';
+                msg.textContent = 'Aluno cadastrado com sucesso!';
+                msg.style.display = 'block';
+                e.target.reset();
+                setTimeout(() => window.location.href = 'listar-alunos.html', 1200);
+            } catch (err) {
+                msg.style.color = '#dc2626';
+                msg.textContent = err.message || 'Erro ao cadastrar aluno.';
+                msg.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Salvar Aluno';
+            }
+        });
+    </script>
 </body>
 </html>

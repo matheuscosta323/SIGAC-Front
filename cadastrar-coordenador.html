@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SIGAC - Cadastrar Coordenador</title>
-
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -16,24 +15,20 @@
             <p>Cadastre um novo coordenador.</p>
         </header>
 
-        <section class="main-table" style="max-width: 800px; margin-top: 20px;">
+        <section class="main-table" style="max-width:800px;margin-top:20px;">
             <form id="formCadastroCoordenador">
-
                 <div class="field-group">
                     <label for="nomeCoordenador">Nome</label>
                     <input type="text" id="nomeCoordenador" required>
                 </div>
-
                 <div class="field-group">
                     <label for="emailCoordenador">Email</label>
                     <input type="email" id="emailCoordenador" required>
                 </div>
-
                 <div class="field-group">
                     <label for="senhaCoordenador">Senha</label>
                     <input type="password" id="senhaCoordenador" required>
                 </div>
-
                 <div class="field-group">
                     <label for="matriculaCoordenador">Matrícula</label>
                     <input type="text" id="matriculaCoordenador">
@@ -41,23 +36,72 @@
                 <div class="field-group">
                     <label for="cursoCoordenador">Curso</label>
                     <select id="cursoCoordenador" required>
-                    <option value="">Selecione um curso</option>
+                        <option value="">Carregando cursos...</option>
                     </select>
                 </div>
 
-                <div style="display: flex; gap: 15px; margin-top: 30px;">
-                    <button type="submit" class="btn-access" style="flex: 2;">
+                <p id="msgCoordenador" style="margin-top:10px;display:none;"></p>
+
+                <div style="display:flex;gap:15px;margin-top:30px;">
+                    <button type="submit" class="btn-access" id="btnSalvarCoord" style="flex:2;">
                         Salvar Coordenador
                     </button>
-
-                    <button type="reset" class="btn-analisar" style="flex: 1;">
-                        Limpar
-                    </button>
+                    <button type="reset" class="btn-analisar" style="flex:1;">Limpar</button>
                 </div>
             </form>
         </section>
     </main>
 
     <script src="main.js"></script>
+    <script type="module">
+        import { listarCursos, cadastrarUsuario } from './api.js';
+
+        async function carregarCursos() {
+            const select = document.getElementById('cursoCoordenador');
+            try {
+                const data = await listarCursos();
+                select.innerHTML = '<option value="">Selecione um curso</option>';
+                (data.cursos || []).forEach(c => {
+                    select.innerHTML += `<option value="${c.id}">${c.nome}</option>`;
+                });
+            } catch {
+                select.innerHTML = '<option value="">Erro ao carregar cursos</option>';
+            }
+        }
+
+        carregarCursos();
+
+        document.getElementById('formCadastroCoordenador').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnSalvarCoord');
+            const msg = document.getElementById('msgCoordenador');
+            btn.disabled = true;
+            btn.textContent = 'Salvando...';
+            msg.style.display = 'none';
+
+            try {
+                await cadastrarUsuario({
+                    nome: document.getElementById('nomeCoordenador').value,
+                    email: document.getElementById('emailCoordenador').value,
+                    senha: document.getElementById('senhaCoordenador').value,
+                    tipo: 'coordenador',
+                    matricula: document.getElementById('matriculaCoordenador').value,
+                    id_curso: Number(document.getElementById('cursoCoordenador').value)
+                });
+                msg.style.color = '#16a34a';
+                msg.textContent = 'Coordenador cadastrado com sucesso!';
+                msg.style.display = 'block';
+                e.target.reset();
+                setTimeout(() => window.location.href = 'listar-coordenadores.html', 1200);
+            } catch (err) {
+                msg.style.color = '#dc2626';
+                msg.textContent = err.message || 'Erro ao cadastrar coordenador.';
+                msg.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Salvar Coordenador';
+            }
+        });
+    </script>
 </body>
 </html>

@@ -11,78 +11,417 @@
     <link rel="stylesheet" href="relatorios.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ── Abas de curso ── */
+        .curso-tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+        .curso-tab {
+            padding: 8px 20px;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            color: #64748b;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all .2s;
+        }
+        .curso-tab:hover { border-color: #2563eb; color: #2563eb; }
+        .curso-tab.active {
+            background: #2563eb;
+            border-color: #2563eb;
+            color: white;
+        }
+
+        /* ── Painel de curso ── */
+        .curso-painel { display: none; }
+        .curso-painel.active { display: block; }
+
+        /* ── Cabeçalho do painel ── */
+        .curso-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 24px;
+            padding: 18px 24px;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+        .curso-header .curso-icon {
+            width: 44px; height: 44px;
+            background: #eff6ff;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            color: #2563eb; font-size: 1.2rem;
+        }
+        .curso-header h2 { font-size: 1.2rem; color: #0a2540; margin: 0; }
+        .curso-header p  { font-size: 0.8rem; color: #64748b; margin: 0; }
+
+        /* ── Tabela de alunos ── */
+        .table-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            padding: 24px;
+            margin-top: 24px;
+        }
+        .table-card h3 {
+            font-size: 1rem;
+            color: #0a2540;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .table-responsive { overflow-x: auto; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+        th {
+            text-align: left;
+            padding: 10px 14px;
+            background: #f8fafc;
+            color: #64748b;
+            font-weight: 600;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #1e293b;
+        }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: #f8fafc; }
+
+        /* badges de status */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge.aprovado  { background:#dcfce7; color:#16a34a; }
+        .badge.pendente  { background:#fef9c3; color:#a16207; }
+        .badge.recusado  { background:#fee2e2; color:#dc2626; }
+
+        /* ── Estado vazio / loading ── */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #94a3b8;
+        }
+        .empty-state i { font-size: 2.5rem; margin-bottom: 12px; display: block; }
+
+        .loading-spinner {
+            text-align: center;
+            padding: 60px 20px;
+            color: #94a3b8;
+        }
+        .loading-spinner i { font-size: 2rem; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
 </head>
 <body>
+    <main class="content">
+        <header class="content-header">
+            <div>
+                <h1>Relatórios</h1>
+                <p id="subtitulo-header">Análise de horas complementares</p>
+            </div>
+        </header>
 
-    <div class="dashboard-container">
-        <aside class="sidebar">
-            <div class="logo">SIGAC</div>
-            <nav class="menu">
-                <a href="dashboard.html"><i class="fa-solid fa-house"></i> Dashboard</a>
-                <a href="listar-alunos.html"><i class="fa-solid fa-users"></i> Alunos</a>
-                <a href="listar-cursos.html"><i class="fa-solid fa-book"></i> Cursos</a>
-                <a href="relatorios.html" class="active"><i class="fa-solid fa-chart-pie"></i> Relatórios</a>
-                <a href="validacao.html"><i class="fa-solid fa-check-to-slot"></i> Certificados</a>
-                <a href="regras-curso.html" class="only-admin"><i class="fa-solid fa-graduation-cap"></i> Regras do Curso</a>
-                
-                <div class="spacer" style="flex-grow: 1;"></div>
-                <a href="index.html" class="logout" onclick="localStorage.clear()"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
-            </nav>
-        </aside>
-
-        <main class="content">
-            <header class="content-header">
-                <div>
-                    <h1>Relatórios</h1>
-                    <p>Análise completa de horas complementares</p>
-                </div>
-                <div class="header-actions">
-                    <button class="btn-mini-export"><i class="fa-solid fa-download"></i> CSV</button>
-                    <button class="btn-mini-export"><i class="fa-solid fa-file-excel"></i> Excel</button>
-                </div>
-            </header>
-
-            <section class="stats-grid">
-                <div class="stat-card">
-                    <i class="fa-solid fa-user-group"></i>
-                    <span>Total de Alunos</span>
-                    <h2 id="card-total-alunos">0</h2> <!-- ID adicionado -->
-                </div>
-                <div class="stat-card">
-                    <i class="fa-solid fa-clock"></i>
-                    <span>Total de Horas</span>
-                    <h2 id="card-total-horas">0h</h2> <!-- ID adicionado -->
-                </div>
-                <div class="stat-card">
-                    <i class="fa-solid fa-file-signature"></i>
-                    <span>Solicitações</span>
-                    <h2 id="card-total-solicitacoes">0</h2> <!-- ID adicionado -->
-                </div>
-                <div class="stat-card green">
-                    <i class="fa-solid fa-arrow-trend-up"></i>
-                    <span>Taxa de Aprovação</span>
-                    <h2 id="card-taxa-aprovacao">0%</h2> <!-- ID adicionado -->
-                </div>
-            </section>
-
-            <section class="charts-container">
-    <div class="chart-card">
-        <h3>Evolução Mensal</h3>
-        <div class="chart-wrapper"> <canvas id="evolucaoChart"></canvas>
+        <!-- Loading inicial -->
+        <div id="loading" class="loading-spinner">
+            <i class="fa-solid fa-circle-notch"></i>
+            <p style="margin-top:12px;">Carregando relatórios...</p>
         </div>
-    </div>
-    <div class="chart-card">
-        <h3>Tipos de Atividades</h3>
-        <div class="chart-wrapper"> <canvas id="atividadesChart"></canvas>
-        </div>
-    </div>
-</section>
-        </main>
-    </div>
 
-    <!-- Scripts -->
+        <!-- Conteúdo principal (oculto até carregar) -->
+        <div id="conteudo" style="display:none;">
+
+            <!-- ══ VISÃO ADMIN: geral do sistema ══ -->
+            <div id="visao-admin" style="display:none;">
+                <section class="stats-grid">
+                    <div class="stat-card">
+                        <i class="fa-solid fa-user-group"></i>
+                        <span>Total de Alunos</span>
+                        <h2 id="card-total-alunos">—</h2>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fa-solid fa-clock"></i>
+                        <span>Horas Aprovadas</span>
+                        <h2 id="card-total-horas">—</h2>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fa-solid fa-file-signature"></i>
+                        <span>Solicitações</span>
+                        <h2 id="card-total-solicitacoes">—</h2>
+                    </div>
+                    <div class="stat-card green">
+                        <i class="fa-solid fa-arrow-trend-up"></i>
+                        <span>Taxa de Aprovação</span>
+                        <h2 id="card-taxa-aprovacao">—</h2>
+                    </div>
+                </section>
+
+                <section class="charts-container">
+                    <div class="chart-card">
+                        <h3>Evolução Mensal</h3>
+                        <div class="chart-wrapper"><canvas id="evolucaoChartAdmin"></canvas></div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Tipos de Atividades</h3>
+                        <div class="chart-wrapper"><canvas id="atividadesChartAdmin"></canvas></div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- ══ VISÃO COORDENADOR: por curso ══ -->
+            <div id="visao-coordenador" style="display:none;">
+                <!-- Abas geradas dinamicamente -->
+                <div class="curso-tabs" id="curso-tabs"></div>
+                <!-- Painéis gerados dinamicamente -->
+                <div id="curso-paineis"></div>
+            </div>
+
+            <!-- Mensagem sem cursos -->
+            <div id="sem-cursos" style="display:none;" class="empty-state">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <p>Nenhum curso vinculado à sua conta.</p>
+            </div>
+
+        </div>
+    </main>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="main.js"></script>
-    <script src="relatorios.js"></script>
+    <script type="module">
+        import { getDashboard } from './api.js';
+
+        const COR_PALETTE = ['#2563eb','#16a34a','#f59e0b','#dc2626','#7c3aed','#0891b2','#db2777','#ea580c'];
+
+        function criarGraficoLinha(canvasId, labels, valores) {
+            const ctx = document.getElementById(canvasId);
+            if (!ctx) return;
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Horas Aprovadas',
+                        data: valores,
+                        borderColor: '#2563eb',
+                        backgroundColor: 'rgba(37,99,235,0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+        }
+
+        function criarGraficoDoughnut(canvasId, labels, valores) {
+            const ctx = document.getElementById(canvasId);
+            if (!ctx) return;
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels,
+                    datasets: [{ data: valores, backgroundColor: COR_PALETTE }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+
+        function badgeStatus(status) {
+            const icone = status === 'aprovado' ? 'fa-check' : status === 'pendente' ? 'fa-clock' : 'fa-xmark';
+            return `<span class="badge ${status}"><i class="fa-solid ${icone}"></i>${status}</span>`;
+        }
+
+        function renderTabelaSubmissoes(submissoes) {
+            if (!submissoes || submissoes.length === 0) {
+                return `<div class="empty-state"><i class="fa-solid fa-inbox"></i><p>Nenhuma submissão encontrada.</p></div>`;
+            }
+            const linhas = submissoes.map(s => `
+                <tr>
+                    <td>${s.aluno_nome || '—'}</td>
+                    <td>${s.titulo || s.descricao || '—'}</td>
+                    <td>${s.area || '—'}</td>
+                    <td>${s.carga_horaria_solicitada ?? '—'}h</td>
+                    <td>${s.carga_horaria_aprovada != null ? s.carga_horaria_aprovada + 'h' : '—'}</td>
+                    <td>${badgeStatus(s.status)}</td>
+                </tr>`).join('');
+            return `
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Aluno</th>
+                                <th>Atividade</th>
+                                <th>Área</th>
+                                <th>Horas Solic.</th>
+                                <th>Horas Aprov.</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>${linhas}</tbody>
+                    </table>
+                </div>`;
+        }
+
+        function renderPainelCurso(curso, idx) {
+            const m = curso.metricas;
+            const panelId = `painel-curso-${idx}`;
+            const evChart = `evolucao-${idx}`;
+            const atChart = `atividades-${idx}`;
+
+            return `
+            <div class="curso-painel ${idx === 0 ? 'active' : ''}" id="${panelId}">
+                <div class="curso-header">
+                    <div class="curso-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                    <div>
+                        <h2>${curso.nome}</h2>
+                        <p>Dados exclusivos deste curso</p>
+                    </div>
+                </div>
+
+                <section class="stats-grid">
+                    <div class="stat-card">
+                        <i class="fa-solid fa-user-group"></i>
+                        <span>Alunos Matriculados</span>
+                        <h2>${m.total_alunos}</h2>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fa-solid fa-clock"></i>
+                        <span>Horas Aprovadas</span>
+                        <h2>${m.total_horas_aprovadas}h</h2>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fa-solid fa-file-signature"></i>
+                        <span>Solicitações</span>
+                        <h2>${m.total_solicitacoes}</h2>
+                    </div>
+                    <div class="stat-card green">
+                        <i class="fa-solid fa-arrow-trend-up"></i>
+                        <span>Taxa de Aprovação</span>
+                        <h2>${m.taxa_aprovacao}%</h2>
+                    </div>
+                </section>
+
+                <section class="charts-container">
+                    <div class="chart-card">
+                        <h3>Evolução Mensal</h3>
+                        <div class="chart-wrapper"><canvas id="${evChart}"></canvas></div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Tipos de Atividades</h3>
+                        <div class="chart-wrapper"><canvas id="${atChart}"></canvas></div>
+                    </div>
+                </section>
+
+                <div class="table-card">
+                    <h3><i class="fa-solid fa-list-check"></i> Submissões do Curso</h3>
+                    ${renderTabelaSubmissoes(curso.submissoes)}
+                </div>
+            </div>`;
+        }
+
+        async function carregarDashboard() {
+            try {
+                const data = await getDashboard();
+                const perfil = localStorage.getItem('perfil');
+
+                document.getElementById('loading').style.display  = 'none';
+                document.getElementById('conteudo').style.display = 'block';
+
+                // ── ADMIN ──
+                if (perfil === 'admin') {
+                    document.getElementById('subtitulo-header').textContent = 'Visão geral do sistema';
+                    document.getElementById('visao-admin').style.display = 'block';
+                    const m = data.metricas;
+                    document.getElementById('card-total-alunos').textContent      = m.total_alunos;
+                    document.getElementById('card-total-horas').textContent       = m.total_horas_aprovadas + 'h';
+                    document.getElementById('card-total-solicitacoes').textContent = m.total_solicitacoes;
+                    document.getElementById('card-taxa-aprovacao').textContent    = m.taxa_aprovacao + '%';
+
+                    criarGraficoLinha(
+                        'evolucaoChartAdmin',
+                        data.evolucao_mensal.map(e => e.mes),
+                        data.evolucao_mensal.map(e => e.horas)
+                    );
+                    criarGraficoDoughnut(
+                        'atividadesChartAdmin',
+                        data.distribuicao_atividades.map(d => d.area),
+                        data.distribuicao_atividades.map(d => d.quantidade)
+                    );
+                    return;
+                }
+
+                // ── COORDENADOR ──
+                const cursos = data.cursos || [];
+                if (cursos.length === 0) {
+                    document.getElementById('sem-cursos').style.display = 'block';
+                    return;
+                }
+
+                document.getElementById('subtitulo-header').textContent =
+                    `Você gerencia ${cursos.length} curso${cursos.length > 1 ? 's' : ''}`;
+                document.getElementById('visao-coordenador').style.display = 'block';
+
+                const tabsEl   = document.getElementById('curso-tabs');
+                const painelEl = document.getElementById('curso-paineis');
+
+                cursos.forEach((curso, idx) => {
+                    // aba
+                    const btn = document.createElement('button');
+                    btn.className = `curso-tab${idx === 0 ? ' active' : ''}`;
+                    btn.textContent = curso.nome;
+                    btn.addEventListener('click', () => {
+                        document.querySelectorAll('.curso-tab').forEach(t => t.classList.remove('active'));
+                        document.querySelectorAll('.curso-painel').forEach(p => p.classList.remove('active'));
+                        btn.classList.add('active');
+                        document.getElementById(`painel-curso-${idx}`).classList.add('active');
+                    });
+                    tabsEl.appendChild(btn);
+
+                    // painel
+                    painelEl.insertAdjacentHTML('beforeend', renderPainelCurso(curso, idx));
+
+                    // gráficos (depois do DOM estar pronto)
+                    setTimeout(() => {
+                        criarGraficoLinha(
+                            `evolucao-${idx}`,
+                            curso.evolucao_mensal.map(e => e.mes),
+                            curso.evolucao_mensal.map(e => e.horas)
+                        );
+                        criarGraficoDoughnut(
+                            `atividades-${idx}`,
+                            curso.distribuicao_atividades.map(d => d.area),
+                            curso.distribuicao_atividades.map(d => d.quantidade)
+                        );
+                    }, 0);
+                });
+
+            } catch (err) {
+                document.getElementById('loading').innerHTML =
+                    `<i class="fa-solid fa-circle-exclamation" style="color:#dc2626"></i>
+                     <p style="margin-top:12px;color:#dc2626;">Erro ao carregar relatórios: ${err.message}</p>`;
+            }
+        }
+
+        carregarDashboard();
+    </script>
 </body>
 </html>

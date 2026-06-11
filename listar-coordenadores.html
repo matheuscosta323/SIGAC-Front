@@ -4,47 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SIGAC - Coordenadores</title>
-
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
-
 <body class="dashboard-body">
     <main class="content">
-        <header class="top-bar" style="display:flex; justify-content:space-between; align-items:center;">
+        <header class="top-bar" style="display:flex;justify-content:space-between;align-items:center;">
             <div>
                 <h1>Coordenadores</h1>
                 <p>Gerencie os coordenadores cadastrados.</p>
             </div>
-
-            <button
-                class="btn-access only-admin"
+            <button class="btn-access only-admin"
                 onclick="window.location.href='cadastrar-coordenador.html'"
-                style="width:auto; margin:0;"
-            >
+                style="width:auto;margin:0;">
                 <i class="fa-solid fa-plus"></i> Novo Coordenador
             </button>
         </header>
 
-        <section class="main-table" style="margin-top: 30px;">
+        <section class="main-table" style="margin-top:30px;">
             <table>
                 <thead>
                     <tr>
                         <th>NOME</th>
                         <th>E-MAIL</th>
                         <th>MATRÍCULA</th>
-                        <th></th>
+                        <th>CURSOS</th>
                     </tr>
                 </thead>
-
                 <tbody id="listaCoordenadores">
-                    <!-- preenchido via JS -->
+                    <tr><td colspan="4" style="text-align:center;padding:20px;">Carregando...</td></tr>
                 </tbody>
             </table>
         </section>
     </main>
 
     <script src="main.js"></script>
+    <script type="module">
+        import { listarCoordenadores } from './api.js';
+
+        async function carregar() {
+            const tbody = document.getElementById('listaCoordenadores');
+            try {
+                const data = await listarCoordenadores();
+                if (!data.coordenadores || data.coordenadores.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Nenhum coordenador cadastrado.</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = data.coordenadores.map(c => `
+                    <tr>
+                        <td>${c.nome}</td>
+                        <td>${c.email}</td>
+                        <td>${c.matricula || '-'}</td>
+                        <td>${(c.cursos || []).join(', ') || '-'}</td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#dc2626;">${err.message}</td></tr>`;
+            }
+        }
+
+        carregar();
+    </script>
 </body>
 </html>

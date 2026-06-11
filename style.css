@@ -287,7 +287,11 @@ body, html {
 
 /* Esconde por padrão. O JS só vai mostrar se for Admin */
 .only-admin {
-    display: none !important;
+    display: none;
+}
+
+.only-coordenador-admin {
+    display: none;
 }
 
 /* Estilos da Página de Relatórios */

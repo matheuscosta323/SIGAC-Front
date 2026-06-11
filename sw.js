@@ -1,60 +1,91 @@
-const CACHE_NAME = 'sigac-cache-v5';
+const CACHE_NAME = 'sigac-cache-v6';
 
-const assets = [
+const STATIC_ASSETS = [
     './',
     './index.html',
+    './home.html',
     './dashboard.html',
     './listar-alunos.html',
     './cadastrar-aluno.html',
     './listar-cursos.html',
     './cadastrar-curso.html',
-    './analise.html',
-    './validacao.html',      
+    './listar-coordenadores.html',
+    './cadastrar-coordenador.html',
+    './validacao.html',
+    './upload-certificado.html',
     './regras-curso.html',
+    './relatorios.html',
+    './vincular-curso.html',
+    './logs.html',
     './style.css',
     './dashboard.css',
-    './validacao.css',      
-    './alunos.css',    
-    './relatorios.html',
+    './validacao.css',
+    './alunos.css',
+    './relatorios.css',
     './main.js',
+    './api.js',
+    './validacao.js',
+    './logs.js',
     './manifest.json',
     './icon-192.png',
     './icon-512.png',
-    'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap',
-    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css'
+    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css',
+    'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap'
 ];
 
-// Instalação: Cacheia arquivos e força a ativação imediata
+// Instalação: pre-cacheia assets estáticos
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      console.log('SIGAC: Cache de ativos realizado com sucesso');
-      return cache.addAll(assets);
-    })
-  );
-  self.skipWaiting(); 
+    event.waitUntil(
+        caches.open(CACHE_NAME).then(cache => {
+            return cache.addAll(STATIC_ASSETS);
+        }).then(() => self.skipWaiting())
+    );
 });
 
-// Ativação: Limpa caches de versões anteriores (v1, etc)
+// Ativação: limpa caches antigos e toma controle imediato
 self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(keys => {
-      return Promise.all(
-        keys.filter(key => key !== CACHE_NAME)
-            .map(key => {
-              console.log('SIGAC: Limpando cache antigo:', key);
-              return caches.delete(key);
-            })
-      );
-    })
-  );
+    event.waitUntil(
+        caches.keys().then(keys =>
+            Promise.all(
+                keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))
+            )
+        ).then(() => self.clients.claim())
+    );
 });
 
-// Fetch: Tenta buscar no cache, se não tiver, busca na rede
+// Fetch: Cache-first para assets estáticos, Network-first para API
 self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request).then(cachedResponse => {
-      return cachedResponse || fetch(event.request);
-    })
-  );
+    const url = new URL(event.request.url);
+
+    // Requisições à API sempre vão para a rede (sem cache)
+    if (url.pathname.startsWith('/api/')) {
+        event.respondWith(
+            fetch(event.request).catch(() =>
+                new Response(JSON.stringify({ success: false, message: 'Sem conexão com o servidor.' }), {
+                    headers: { 'Content-Type': 'application/json' }
+                })
+            )
+        );
+        return;
+    }
+
+    // Para assets estáticos: Cache-first, fallback para rede
+    event.respondWith(
+        caches.match(event.request).then(cached => {
+            if (cached) return cached;
+            return fetch(event.request).then(response => {
+                // Cacheia respostas válidas de assets estáticos
+                if (response && response.status === 200 && response.type === 'basic') {
+                    const responseClone = response.clone();
+                    caches.open(CACHE_NAME).then(cache => cache.put(event.request, responseClone));
+                }
+                return response;
+            });
+        }).catch(() => {
+            // Fallback offline: retorna index.html para navegação
+            if (event.request.mode === 'navigate') {
+                return caches.match('./index.html');
+            }
+        })
+    );
 });

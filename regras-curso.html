@@ -3,84 +3,261 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Configuração de Regras - SIGAC</title>
-
+    <title>Regras de Atividade - SIGAC</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="dashboard.css">
     <link rel="stylesheet" href="validacao.css">
     <link rel="stylesheet" href="alunos.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .regra-card { background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:20px; margin-bottom:12px; }
+        .regra-card h4 { color:#0a2540; margin-bottom:4px; }
+        .regra-card .meta { font-size:0.82rem; color:#64748b; margin-bottom:8px; }
+        .regra-actions { display:flex; gap:8px; margin-top:12px; }
+        .btn-sm { padding:6px 14px; border-radius:6px; border:1px solid #e2e8f0; cursor:pointer; font-size:0.82rem; font-weight:600; }
+        .btn-edit { background:#eff6ff; color:#1d4ed8; border-color:#bfdbfe; }
+        .btn-del  { background:#fef2f2; color:#dc2626; border-color:#fee2e2; }
+        .sigac-input { width:100%; padding:11px 14px; border:1px solid #e2e8f0; border-radius:8px; background:#f8fafc; font-size:0.95rem; }
+        .sigac-input:focus { outline:none; border-color:#0a2540; background:#fff; }
+        .badge-cert { display:inline-block; background:#ecfdf5; color:#059669; border:1px solid #d1fae5; padding:2px 10px; border-radius:20px; font-size:0.75rem; font-weight:600; }
+        .badge-sem { display:inline-block; background:#f1f5f9; color:#64748b; padding:2px 10px; border-radius:20px; font-size:0.75rem; }
+        .pill-horas { background:#eff6ff; color:#1d4ed8; padding:3px 10px; border-radius:20px; font-size:0.78rem; font-weight:700; }
+        label { font-size:0.82rem; font-weight:600; color:#0a2540; display:block; margin-bottom:5px; }
+        .input-group { margin-bottom:14px; }
+        .input-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+        #listaRegras:empty::after { content:"Nenhuma regra cadastrada para este curso."; color:#64748b; font-size:0.9rem; }
+    </style>
 </head>
-
 <body class="dashboard-body">
-
-    <main class="content" style="margin-left: 0 !important; padding-left: 280px !important; width: 100%;">
-        
-        <div class="rules-container" style="max-width: 1000px; margin-left: 0;">
-
-            <!-- HEADER -->
-            <header class="rules-header">
-                <h1>Configuração de Regras</h1>
-                <p>Defina limites e requisitos de horas por área de atividades complementares</p>
-            </header>
-
-            <!-- 🔥 NOVO: SELEÇÃO DE CURSO -->
-            <div class="main-card" style="margin-bottom: 20px;">
-                <div class="input-group">
-                    <label>Selecionar Curso</label>
-                    <select id="selectCurso" class="sigac-input">
-                        <option value="">Selecione um curso</option>
-                    </select>
-                </div>
+    <main class="content">
+        <header class="top-bar">
+            <div>
+                <h1>Regras de Atividade</h1>
+                <p>Defina limites de horas por área de atividades complementares</p>
             </div>
+        </header>
 
-            <!-- CARD PRINCIPAL -->
-            <div class="main-card">
-
-                <div class="course-info">
-                    <h2 id="nomeCurso">Curso</h2>
-                    <span class="course-code" id="codigoCurso">Código: -</span>
-                </div>
-                
-                <div class="hours-summary">
-
-                    <div class="input-group">
-                        <label>Total de Horas Requeridas</label>
-                        <input type="number" value="0" class="sigac-input" id="totalHoras">
-                    </div>
-
-                    <div class="total-badge">
-                        <span>Total Configurado nas Áreas</span>
-                        <strong id="totalConfigurado">0h</strong>
-                    </div>
-
-                </div>
+        <!-- Seleção de curso -->
+        <div class="main-table" style="max-width:500px;margin-bottom:24px;">
+            <div class="input-group">
+                <label for="selectCurso">Selecionar Curso</label>
+                <select id="selectCurso" class="sigac-input">
+                    <option value="">Carregando cursos...</option>
+                </select>
             </div>
-
-            <!-- DIVISÃO -->
-            <div class="section-divider">
-                <h3>Áreas de Atividades</h3>
-                <button class="btn-add-area" id="btnAddArea">
-                    <i class="fa-solid fa-plus"></i> Adicionar Área
-                </button>
-            </div>
-
-            <!-- LISTA DINÂMICA -->
-            <div class="areas-list" id="listaAreas">
-
-                <!-- Áreas serão inseridas via JavaScript -->
-
-                <div style="padding: 20px; text-align: center; color: #64748b;">
-                    Nenhuma área cadastrada ainda.
-                </div>
-
-            </div>
-            
         </div>
 
+        <!-- Formulário nova/editar regra -->
+        <div class="main-table" id="formCard" style="max-width:720px;margin-bottom:24px;display:none;">
+            <h3 id="formTitulo" style="margin-bottom:16px;color:#0a2540;">Nova Regra</h3>
+            <div class="input-row">
+                <div class="input-group">
+                    <label for="inputArea">Área</label>
+                    <input type="text" id="inputArea" class="sigac-input" placeholder="Ex: Cultural">
+                </div>
+                <div class="input-group">
+                    <label for="inputLimite">Limite de Horas</label>
+                    <input type="number" id="inputLimite" class="sigac-input" min="1" placeholder="60">
+                </div>
+            </div>
+            <div class="input-group">
+                <label for="inputDesc">Descrição</label>
+                <input type="text" id="inputDesc" class="sigac-input" placeholder="Descreva o tipo de atividade">
+            </div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label for="inputRequisito">Requisito</label>
+                    <input type="text" id="inputRequisito" class="sigac-input" placeholder="Opcional">
+                </div>
+                <div class="input-group" style="display:flex;align-items:center;gap:10px;margin-top:22px;">
+                    <input type="checkbox" id="inputExige" style="width:18px;height:18px;">
+                    <label for="inputExige" style="margin:0;">Exige Certificado</label>
+                </div>
+            </div>
+            <p id="msgRegra" style="display:none;margin-bottom:10px;"></p>
+            <div style="display:flex;gap:12px;">
+                <button id="btnSalvarRegra" class="btn-access" style="flex:2;">
+                    <i class="fa-solid fa-floppy-disk"></i> Salvar Regra
+                </button>
+                <button onclick="cancelarEdicao()" class="btn-analisar" style="flex:1;">Cancelar</button>
+            </div>
+        </div>
+
+        <!-- Botão nova regra -->
+        <div id="btnNovaRegraWrap" style="max-width:720px;margin-bottom:16px;display:none;">
+            <button onclick="mostrarFormNova()" class="btn-access" style="width:auto;padding:10px 22px;">
+                <i class="fa-solid fa-plus"></i> Nova Regra
+            </button>
+        </div>
+
+        <!-- Lista de regras -->
+        <div id="listaRegras" style="max-width:720px;"></div>
+        <p id="msgVazia" style="color:#64748b;display:none;font-size:0.9rem;">Nenhuma regra cadastrada para este curso.</p>
     </main>
 
     <script src="main.js"></script>
+    <script type="module">
+        import { listarCursos, listarRegras, criarRegra, atualizarRegra, excluirRegra } from './api.js';
 
+        let cursoAtual = null;
+        let regrasCache = [];
+        let editandoId = null;
+
+        async function carregarCursos() {
+            const sel = document.getElementById('selectCurso');
+            try {
+                const data = await listarCursos();
+                sel.innerHTML = '<option value="">— Selecione um curso —</option>';
+                (data.cursos || []).forEach(c => {
+                    sel.innerHTML += `<option value="${c.id}">${c.nome}</option>`;
+                });
+            } catch(err) {
+                sel.innerHTML = `<option value="">Erro: ${err.message}</option>`;
+            }
+        }
+
+        document.getElementById('selectCurso').addEventListener('change', async function() {
+            cursoAtual = this.value ? parseInt(this.value) : null;
+            document.getElementById('btnNovaRegraWrap').style.display = cursoAtual ? 'block' : 'none';
+            document.getElementById('formCard').style.display = 'none';
+            if (cursoAtual) await carregarRegras();
+            else {
+                document.getElementById('listaRegras').innerHTML = '';
+                document.getElementById('msgVazia').style.display = 'none';
+            }
+        });
+
+        async function carregarRegras() {
+            const lista = document.getElementById('listaRegras');
+            const msgVazia = document.getElementById('msgVazia');
+            lista.innerHTML = '<p style="color:#64748b;">Carregando...</p>';
+            try {
+                const data = await listarRegras(cursoAtual);
+                regrasCache = data.regras || [];
+                renderRegras();
+            } catch(err) {
+                lista.innerHTML = `<p style="color:#dc2626;">${err.message}</p>`;
+            }
+        }
+
+        function renderRegras() {
+            const lista = document.getElementById('listaRegras');
+            const msgVazia = document.getElementById('msgVazia');
+            if (regrasCache.length === 0) {
+                lista.innerHTML = '';
+                msgVazia.style.display = 'block';
+                return;
+            }
+            msgVazia.style.display = 'none';
+            lista.innerHTML = regrasCache.map(r => `
+                <div class="regra-card">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                        <div>
+                            <h4>${r.area}</h4>
+                            <div class="meta">${r.descricao}</div>
+                            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">
+                                <span class="pill-horas"><i class="fa-solid fa-clock"></i> Limite: ${r.limite_horas}h</span>
+                                ${r.exige_certificado
+                                    ? '<span class="badge-cert"><i class="fa-solid fa-certificate"></i> Exige certificado</span>'
+                                    : '<span class="badge-sem">Sem certificado obrigatório</span>'}
+                                ${r.requisito ? `<span class="badge-sem">${r.requisito}</span>` : ''}
+                            </div>
+                        </div>
+                        <div class="regra-actions">
+                            <button class="btn-sm btn-edit" onclick="editarRegra(${r.id})">
+                                <i class="fa-solid fa-pen"></i> Editar
+                            </button>
+                            <button class="btn-sm btn-del" onclick="deletarRegra(${r.id}, '${r.area}')">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function mostrarFormNova() {
+            editandoId = null;
+            document.getElementById('formTitulo').textContent = 'Nova Regra';
+            document.getElementById('inputArea').value = '';
+            document.getElementById('inputLimite').value = '';
+            document.getElementById('inputDesc').value = '';
+            document.getElementById('inputRequisito').value = '';
+            document.getElementById('inputExige').checked = false;
+            document.getElementById('formCard').style.display = 'block';
+            document.getElementById('formCard').scrollIntoView({ behavior: 'smooth' });
+        }
+        window.mostrarFormNova = mostrarFormNova;
+
+        function cancelarEdicao() {
+            editandoId = null;
+            document.getElementById('formCard').style.display = 'none';
+        }
+        window.cancelarEdicao = cancelarEdicao;
+
+        function editarRegra(id) {
+            const r = regrasCache.find(x => x.id === id);
+            if (!r) return;
+            editandoId = id;
+            document.getElementById('formTitulo').textContent = 'Editar Regra';
+            document.getElementById('inputArea').value = r.area;
+            document.getElementById('inputLimite').value = r.limite_horas;
+            document.getElementById('inputDesc').value = r.descricao;
+            document.getElementById('inputRequisito').value = r.requisito || '';
+            document.getElementById('inputExige').checked = r.exige_certificado;
+            document.getElementById('formCard').style.display = 'block';
+            document.getElementById('formCard').scrollIntoView({ behavior: 'smooth' });
+        }
+        window.editarRegra = editarRegra;
+
+        async function deletarRegra(id, area) {
+            if (!confirm(`Excluir a regra "${area}"?`)) return;
+            try {
+                await excluirRegra(id);
+                regrasCache = regrasCache.filter(r => r.id !== id);
+                renderRegras();
+            } catch(err) {
+                alert('Erro ao excluir: ' + err.message);
+            }
+        }
+        window.deletarRegra = deletarRegra;
+
+        document.getElementById('btnSalvarRegra').addEventListener('click', async () => {
+            const btn = document.getElementById('btnSalvarRegra');
+            const dados = {
+                area: document.getElementById('inputArea').value.trim(),
+                limite_horas: parseInt(document.getElementById('inputLimite').value),
+                descricao: document.getElementById('inputDesc').value.trim(),
+                requisito: document.getElementById('inputRequisito').value.trim(),
+                exige_certificado: document.getElementById('inputExige').checked,
+                id_curso: cursoAtual
+            };
+
+            if (!dados.area || !dados.limite_horas || !dados.descricao) {
+                exibirMensagem('msgRegra', 'Área, limite de horas e descrição são obrigatórios.', 'erro');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Salvando...';
+            try {
+                if (editandoId) {
+                    await atualizarRegra(editandoId, dados);
+                } else {
+                    await criarRegra(dados);
+                }
+                exibirMensagem('msgRegra', 'Regra salva com sucesso!', 'sucesso');
+                document.getElementById('formCard').style.display = 'none';
+                await carregarRegras();
+            } catch(err) {
+                exibirMensagem('msgRegra', err.message, 'erro');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Salvar Regra';
+            }
+        });
+
+        carregarCursos();
+    </script>
 </body>
 </html>

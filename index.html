@@ -4,46 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SIGAC - Login</title>
+    <meta name="description" content="Sistema de Gestão de Atividades Complementares">
+    <meta name="theme-color" content="#0a2540">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
 </head>
 <body class="login-page">
     <main class="login-container">
-        
         <section class="login-form-side">
             <div class="form-content">
                 <h1 class="logo-main">SIGAC</h1>
                 <p class="system-subtitle">Sistema de Gestão de Atividades Complementares</p>
 
-                <form id="loginForm">
+                <form id="loginForm" novalidate>
                     <div class="field-group">
                         <label for="email">E-mail institucional</label>
-                        <input type="email" id="email" placeholder="email@senac.br" required>
+                        <input type="email" id="email" placeholder="email@senac.br"
+                            autocomplete="email" required>
                     </div>
                     <div class="field-group">
                         <label for="password">Senha</label>
-                        <input type="password" id="password" placeholder="••••••••" required>
+                        <input type="password" id="password" placeholder="••••••••"
+                            autocomplete="current-password" required>
                     </div>
-                    
                     <div class="row-options">
                         <label class="check-label">
-                            <input type="checkbox"> Lembrar de mim
+                            <input type="checkbox" id="lembrar"> Lembrar de mim
                         </label>
                         <a href="#" class="forgot-link">Esqueceu a senha?</a>
                     </div>
-
-                    <button type="submit" class="btn-access">Acessar Painel</button>
+                    <p id="erroLogin" role="alert" style="color:#e53e3e;display:none;margin-bottom:10px;"></p>
+                    <button type="submit" class="btn-access" id="btnLogin">Acessar Painel</button>
                 </form>
-                <p class="footer-notice">Acesso restrito a coordenadores e administradores</p>
+                <p class="footer-notice">Acesso restrito a coordenadores, administradores e alunos</p>
             </div>
         </section>
 
-        <section class="login-info-side">
+        <section class="login-info-side" aria-hidden="true">
             <div class="info-box">
                 <h2 class="display-title">Gestão Completa do Sistema</h2>
-                <p class="display-text">Configure cursos, gerencie usuários e tenha acesso total ao sistema com logs de auditoria completos.</p>
-                
+                <p class="display-text">Configure cursos, gerencie usuários, valide atividades complementares e acompanhe relatórios em tempo real.</p>
                 <div class="stats-row">
                     <div class="stat-box">
                         <span class="stat-num">8</span>
@@ -60,18 +61,53 @@
                 </div>
             </div>
         </section>
-        
     </main>
-    <script src="main.js"></script>
-    
+
     <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js')
-            .then(reg => console.log('SW registrado com sucesso!', reg))
-            .catch(err => console.error('Falha ao registrar o SW:', err));
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').catch(() => {});
+            });
+        }
+    </script>
+    <script type="module">
+        import { login } from './api.js';
+
+        if (localStorage.getItem('token')) {
+            window.location.href = 'home.html';
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnLogin');
+            const erro = document.getElementById('erroLogin');
+            const email = document.getElementById('email').value.trim();
+            const senha = document.getElementById('password').value;
+
+            if (!email || !senha) {
+                erro.textContent = 'Preencha e-mail e senha.';
+                erro.style.display = 'block';
+                return;
+            }
+
+            erro.style.display = 'none';
+            btn.disabled = true;
+            btn.textContent = 'Entrando...';
+
+            try {
+                const dados = await login(email, senha);
+                const payload = JSON.parse(atob(dados.access_token.split('.')[1]));
+                localStorage.setItem('token', dados.access_token);
+                localStorage.setItem('perfil', payload.role);
+                localStorage.setItem('nomeUsuario', payload.nome || email);
+                window.location.href = 'home.html';
+            } catch(err) {
+                erro.textContent = err.message || 'Credenciais inválidas.';
+                erro.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = 'Acessar Painel';
+            }
         });
-      }
     </script>
 </body>
 </html>

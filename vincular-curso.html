@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGAC - Vincular Curso</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body class="dashboard-body">
+    <main class="content">
+        <header class="top-bar">
+            <div>
+                <h1>Vincular Curso</h1>
+                <p>Vincule um aluno ou coordenador já cadastrado a um curso adicional.</p>
+            </div>
+        </header>
+
+        <section class="main-table" style="max-width:700px;margin-top:20px;">
+            <form id="formVincular">
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+                    <div class="field-group">
+                        <label for="tipoUsuario">Tipo de Usuário</label>
+                        <select id="tipoUsuario" required
+                            style="width:100%;padding:12px;border-radius:8px;border:1px solid #e2e8f0;background:#fff;">
+                            <option value="">Selecione o tipo</option>
+                            <option value="aluno">Aluno</option>
+                            <option value="coordenador">Coordenador</option>
+                        </select>
+                    </div>
+                    <div class="field-group">
+                        <label for="selectUsuario">Usuário</label>
+                        <select id="selectUsuario" required disabled
+                            style="width:100%;padding:12px;border-radius:8px;border:1px solid #e2e8f0;background:#fff;">
+                            <option value="">Selecione o tipo primeiro</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="field-group" style="margin-top:15px;">
+                    <label for="selectCurso">Curso a Vincular</label>
+                    <select id="selectCurso" required
+                        style="width:100%;padding:12px;border-radius:8px;border:1px solid #e2e8f0;background:#fff;">
+                        <option value="">Carregando cursos...</option>
+                    </select>
+                </div>
+
+                <p id="msgVincular" style="margin-top:10px;display:none;"></p>
+
+                <div style="display:flex;gap:15px;margin-top:30px;">
+                    <button type="submit" class="btn-access" id="btnVincular" style="flex:2;">
+                        <i class="fa-solid fa-link"></i> Vincular ao Curso
+                    </button>
+                    <button type="reset" class="btn-analisar" style="flex:1;" onclick="resetForm()">Limpar</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <script src="main.js"></script>
+    <script type="module">
+        import { listarCursos, listarAlunos, listarCoordenadores, vincularCurso } from './api.js';
+
+        let todosAlunos = [];
+        let todosCoordenadores = [];
+
+        async function carregarDados() {
+            try {
+                const [dadosCursos, dadosAlunos, dadosCoords] = await Promise.all([
+                    listarCursos(),
+                    listarAlunos(),
+                    listarCoordenadores()
+                ]);
+
+                todosAlunos = dadosAlunos.alunos || [];
+                todosCoordenadores = dadosCoords.coordenadores || [];
+
+                const selectCurso = document.getElementById('selectCurso');
+                selectCurso.innerHTML = '<option value="">Selecione um curso</option>';
+                (dadosCursos.cursos || []).forEach(c => {
+                    selectCurso.innerHTML += `<option value="${c.id}">${c.nome}</option>`;
+                });
+            } catch(err) {
+                document.getElementById('selectCurso').innerHTML = `<option value="">Erro: ${err.message}</option>`;
+            }
+        }
+
+        document.getElementById('tipoUsuario').addEventListener('change', function() {
+            const selectUsuario = document.getElementById('selectUsuario');
+            const tipo = this.value;
+            selectUsuario.disabled = !tipo;
+
+            if (tipo === 'aluno') {
+                selectUsuario.innerHTML = '<option value="">Selecione o aluno</option>';
+                todosAlunos.forEach(a => {
+                    selectUsuario.innerHTML += `<option value="${a.id}">${a.nome} — ${a.matricula}</option>`;
+                });
+            } else if (tipo === 'coordenador') {
+                selectUsuario.innerHTML = '<option value="">Selecione o coordenador</option>';
+                todosCoordenadores.forEach(c => {
+                    selectUsuario.innerHTML += `<option value="${c.id}">${c.nome}</option>`;
+                });
+            } else {
+                selectUsuario.innerHTML = '<option value="">Selecione o tipo primeiro</option>';
+            }
+        });
+
+        document.getElementById('formVincular').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnVincular');
+            const msg = document.getElementById('msgVincular');
+            const id_usuario = parseInt(document.getElementById('selectUsuario').value);
+            const id_curso   = parseInt(document.getElementById('selectCurso').value);
+
+            if (!id_usuario || !id_curso) {
+                exibirMensagem('msgVincular', 'Selecione o usuário e o curso.', 'erro');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Vinculando...';
+            try {
+                await vincularCurso({ id_usuario, id_curso });
+                exibirMensagem('msgVincular', 'Vínculo criado com sucesso!', 'sucesso');
+                this.reset();
+                document.getElementById('selectUsuario').disabled = true;
+            } catch(err) {
+                exibirMensagem('msgVincular', err.message, 'erro');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-link"></i> Vincular ao Curso';
+            }
+        });
+
+        function resetForm() {
+            document.getElementById('selectUsuario').disabled = true;
+            document.getElementById('selectUsuario').innerHTML = '<option value="">Selecione o tipo primeiro</option>';
+        }
+        window.resetForm = resetForm;
+
+        carregarDados();
+    </script>
+</body>
+</html>

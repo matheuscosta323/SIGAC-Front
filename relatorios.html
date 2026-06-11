@@ -142,16 +142,13 @@
             </div>
         </header>
 
-        <!-- Loading inicial -->
         <div id="loading" class="loading-spinner">
             <i class="fa-solid fa-circle-notch"></i>
             <p style="margin-top:12px;">Carregando relatórios...</p>
         </div>
 
-        <!-- Conteúdo principal (oculto até carregar) -->
         <div id="conteudo" style="display:none;">
 
-            <!-- ══ VISÃO ADMIN: geral do sistema ══ -->
             <div id="visao-admin" style="display:none;">
                 <section class="stats-grid">
                     <div class="stat-card">
@@ -188,15 +185,11 @@
                 </section>
             </div>
 
-            <!-- ══ VISÃO COORDENADOR: por curso ══ -->
             <div id="visao-coordenador" style="display:none;">
-                <!-- Abas geradas dinamicamente -->
                 <div class="curso-tabs" id="curso-tabs"></div>
-                <!-- Painéis gerados dinamicamente -->
                 <div id="curso-paineis"></div>
             </div>
 
-            <!-- Mensagem sem cursos -->
             <div id="sem-cursos" style="display:none;" class="empty-state">
                 <i class="fa-solid fa-circle-exclamation"></i>
                 <p>Nenhum curso vinculado à sua conta.</p>
@@ -346,7 +339,6 @@
                 document.getElementById('loading').style.display  = 'none';
                 document.getElementById('conteudo').style.display = 'block';
 
-                // ── ADMIN ──
                 if (perfil === 'admin') {
                     document.getElementById('subtitulo-header').textContent = 'Visão geral do sistema';
                     document.getElementById('visao-admin').style.display = 'block';
@@ -369,7 +361,6 @@
                     return;
                 }
 
-                // ── COORDENADOR ──
                 const cursos = data.cursos || [];
                 if (cursos.length === 0) {
                     document.getElementById('sem-cursos').style.display = 'block';
@@ -396,10 +387,8 @@
                     });
                     tabsEl.appendChild(btn);
 
-                    // painel
                     painelEl.insertAdjacentHTML('beforeend', renderPainelCurso(curso, idx));
 
-                    // gráficos (depois do DOM estar pronto)
                     setTimeout(() => {
                         criarGraficoLinha(
                             `evolucao-${idx}`,

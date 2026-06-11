@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sigac-cache-v6';
+const CACHE_NAME = 'sigac-cache-v7';
 
 const STATIC_ASSETS = [
     './',
@@ -12,7 +12,6 @@ const STATIC_ASSETS = [
     './listar-coordenadores.html',
     './cadastrar-coordenador.html',
     './validacao.html',
-    './upload-certificado.html',
     './regras-curso.html',
     './relatorios.html',
     './vincular-curso.html',

@@ -2,7 +2,7 @@
 // api.js — Camada de integração com o backend SIGAC
 // ================================================
 
-const API_BASE = 'https://sigac-back-6jy9.onrender.com';
+const API_BASE = 'http://localhost:5000';
 
 // -----------------------------------------------
 // Helpers internos

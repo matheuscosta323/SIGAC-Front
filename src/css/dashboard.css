@@ -716,3 +716,107 @@ td {
         grid-template-columns: 1fr;
     }
 }
+/* =====================================================
+   RESPONSIVIDADE MOBILE — adicionar ao final de dashboard.css
+   ===================================================== */
+
+@media (max-width: 768px) {
+
+    /* Conteúdo das páginas internas (dentro do iframe) */
+    .content {
+        margin-left: 0;
+        padding: 20px 15px;
+    }
+
+    /* Header com título + botão lado a lado vira coluna */
+    .header-flex {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    /* Busca e filtro empilham */
+    .search-container {
+        flex-direction: column;
+    }
+
+    /* Grids de cards viram coluna única */
+    .metrics-grid,
+    .dashboard-cards,
+    .grid-alunos {
+        grid-template-columns: 1fr;
+    }
+
+    /* Gráficos lado a lado viram coluna única */
+    .charts-container,
+    .reports-charts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Tabelas: scroll horizontal em vez de quebrar */
+    .table-container,
+    .main-table {
+        overflow-x: auto;
+        padding: 15px 10px;
+    }
+
+    table,
+    .sigac-table {
+        min-width: 500px; /* força scroll se necessário */
+    }
+
+    /* Formulários de cadastro */
+    .hours-summary,
+    .area-inputs {
+        flex-direction: column;
+    }
+
+    /* Abas ficam com scroll horizontal se necessário */
+    .tabs-container {
+        overflow-x: auto;
+        gap: 15px;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Cards de regras */
+    .rules-container {
+        padding: 15px;
+    }
+
+    /* Welcome title menor */
+    .welcome h1,
+    .top-bar h1 {
+        font-size: 1.4rem;
+    }
+
+    /* Título de seção no header-flex */
+    .rules-header h1 {
+        font-size: 1.6rem;
+    }
+
+    /* section-divider empilha */
+    .section-divider {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        margin: 30px 0 20px;
+    }
+
+    /* Progresso dos alunos: oculta barra em telas muito pequenas */
+    .progress-wrapper {
+        min-width: unset;
+    }
+}
+
+/* Telas muito pequenas (< 400px) */
+@media (max-width: 400px) {
+    .card-number,
+    .card-info h2 {
+        font-size: 1.4rem;
+    }
+
+    .tab-item {
+        font-size: 0.85rem;
+    }
+}

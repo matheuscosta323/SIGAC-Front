@@ -1,60 +1,8 @@
-<<<<<<< Updated upstream
-# SIGAC-Front
-
-Sistema de Gestão de Atividades Complementares – Interface web.
-
-## Funcionalidades
-
-- Login com autenticação JWT
-- Cadastro e listagem de alunos, coordenadores e cursos
-- Submissão de certificados pelos alunos
-- Validação de horas pelos coordenadores
-- Relatórios com gráficos de evolução e distribuição
-- Logs do sistema
-- Interface responsiva e PWA
-
-## Tecnologias
-
-- HTML5, CSS3, JavaScript
-- Chart.js (gráficos)
-- Service Worker + Manifest (PWA)
-
-## Estrutura
-SIGAC-Front/
-├── index.html
-├── home.html
-├── dashboard.html
-├── listar-alunos.html
-├── cadastrar-aluno.html
-├── listar-coordenadores.html
-├── cadastrar-coordenador.html
-├── listar-cursos.html
-├── cadastrar-curso.html
-├── upload-certificado.html
-├── validacao.html
-├── relatorios.html
-├── regras-curso.html
-├── logs.html
-├── style.css
-├── dashboard.css
-├── alunos.css
-├── validacao.css
-├── relatorios.css
-├── auth.js
-├── dashboard.js
-├── home.js
-├── email.js
-├── manifest.json
-├── sw.js
-└── icon-*.png
-
-## Integração com o Backend
-
-A aplicação consome uma API REST (Flask). On backend está deployado no Render.
-=======
 # SIGAC — Frontend
 
 Interface web do **Sistema de Gestão de Atividades Complementares**, desenvolvida com HTML5, CSS3 e JavaScript puro (ES Modules), com suporte a **PWA**.
+
+> Painel exclusivo para perfis **admin** e **coordenador**. Alunos acessam apenas as páginas de upload de certificado e acompanhamento de status.
 
 ---
 
@@ -72,7 +20,7 @@ Interface web do **Sistema de Gestão de Atividades Complementares**, desenvolvi
 
 ## Como executar
 
-O frontend é composto por arquivos estáticos. Você pode servir de duas formas:
+O frontend é composto por arquivos estáticos. Você pode servir de três formas:
 
 ### Opção 1 — Node.js (recomendado)
 ```bash
@@ -93,17 +41,19 @@ python -m http.server 3000
 ### Opção 3 — VS Code
 Instale a extensão **Live Server** e clique em "Go Live".
 
-> **Atenção**: abrir os arquivos diretamente pelo `file://` faz o Service Worker não funcionar. Use sempre um servidor local.
+> **Atenção**: abrir os arquivos diretamente pelo `file://` impede o Service Worker de funcionar. Use sempre um servidor local.
 
 ---
 
 ## Configuração do backend
 
-Em `api.js`, altere `API_BASE` para o endereço do seu backend Flask:
+Em `src/js/api.js`, altere `API_BASE` para o endereço do seu backend Flask:
 
 ```javascript
 const API_BASE = 'http://localhost:5000';
 ```
+
+O backend de produção está hospedado no **Render**: `https://sigac-back-6jy9.onrender.com`
 
 ---
 
@@ -111,37 +61,45 @@ const API_BASE = 'http://localhost:5000';
 
 ```
 SIGAC-Front/
-├── index.html                  ← Login
-├── home.html                   ← Shell com sidebar + iframe
-├── dashboard.html              ← Painel principal (métricas + gráficos)
-├── listar-alunos.html          ← Lista de alunos com progresso
-├── cadastrar-aluno.html        ← Formulário de cadastro de aluno
-├── listar-coordenadores.html   ← Lista de coordenadores
-├── cadastrar-coordenador.html  ← Formulário de cadastro de coordenador
-├── vincular-curso.html         ← Vincular usuário a curso adicional (NOVO)
-├── listar-cursos.html          ← Lista de cursos
-├── cadastrar-curso.html        ← Formulário de cadastro de curso
-├── regras-curso.html           ← CRUD de regras de atividade por curso
-├── validacao.html              ← Validação de certificados (tabs: pendente/aprovado/recusado)
-├── upload-certificado.html     ← Upload de certificado pelo aluno
-├── relatorios.html             ← Relatórios com gráficos
-├── logs.html                   ← Logs do sistema
+├── index.html                       ← Login
+├── home.html                        ← Shell com sidebar + iframe
+├── manifest.json                    ← Web App Manifest (PWA)
+├── sw.js                            ← Service Worker (cache + offline)
 │
-├── api.js                      ← Camada de integração com o backend (ES Module)
-├── main.js                     ← Lógica compartilhada (proteção de rota, role, SW)
-├── validacao.js                ← Lógica da página de validação
-├── logs.js                     ← Lógica de logs
+├── assets/
+│   └── icons/
+│       ├── icon-192.png             ← Ícone PWA 192×192
+│       └── icon-512.png             ← Ícone PWA 512×512
 │
-├── style.css                   ← Estilos globais e login
-├── dashboard.css               ← Sidebar, layout, cards
-├── alunos.css                  ← Tabela e barras de progresso
-├── validacao.css               ← Cards de certificado
-├── relatorios.css              ← Layout de relatórios e gráficos
-│
-├── manifest.json               ← Web App Manifest (PWA)
-├── sw.js                       ← Service Worker (cache + offline)
-├── icon-192.png                ← Ícone PWA 192×192
-└── icon-512.png                ← Ícone PWA 512×512
+├── src/
+│   ├── css/
+│   │   ├── style.css                ← Estilos globais e login
+│   │   ├── dashboard.css            ← Sidebar, layout, cards
+│   │   ├── alunos.css               ← Tabela e barras de progresso
+│   │   ├── validacao.css            ← Cards de certificado
+│   │   └── relatorios.css           ← Layout de relatórios e gráficos
+│   │
+│   ├── js/
+│   │   ├── api.js                   ← Camada de integração com o backend (ES Module)
+│   │   ├── main.js                  ← Lógica compartilhada (proteção de rota, role, SW)
+│   │   ├── validacao.js             ← Lógica da página de validação
+│   │   ├── logs.js                  ← Lógica de logs
+│   │   └── email.js                 ← Utilitários de e-mail
+│   │
+│   └── pages/
+│       ├── dashboard.html           ← Painel principal (métricas + gráficos)
+│       ├── listar-alunos.html       ← Lista de alunos com progresso de horas
+│       ├── cadastrar-aluno.html     ← Formulário de cadastro de aluno
+│       ├── listar-coordenadores.html
+│       ├── cadastrar-coordenador.html
+│       ├── vincular-curso.html      ← Vincular usuário a curso adicional
+│       ├── listar-cursos.html
+│       ├── cadastrar-curso.html
+│       ├── regras-curso.html        ← CRUD de regras de atividade por curso
+│       ├── validacao.html           ← Validação de certificados (pendente/aprovado/recusado)
+│       ├── upload-certificado.html  ← Upload de certificado pelo aluno
+│       ├── relatorios.html          ← Relatórios com gráficos
+│       └── logs.html                ← Logs do sistema
 ```
 
 ---
@@ -154,91 +112,95 @@ O SIGAC pode ser **instalado como app** em dispositivos móveis e desktops.
 - `manifest.json` — define nome, ícones, cor de tema e atalhos de instalação
 - `sw.js` — Service Worker com duas estratégias:
   - **Cache-first** para assets estáticos (HTML, CSS, JS, ícones)
-  - **Network-first** para chamadas à API (`/api/*`), com fallback de erro offline
-- O SW é registrado automaticamente pelo `main.js` e `index.html`
+  - **Network-first** para chamadas à API (`/api/*`), com fallback offline
+- O SW é registrado automaticamente pelo `main.js`
 
 ### Como instalar
 No Chrome/Edge, ao acessar o sistema, aparecerá um ícone de instalação na barra de endereço. Em mobile, use "Adicionar à tela inicial".
+
+### Atalhos do app
+| Atalho | URL |
+|---|---|
+| Dashboard | `./home.html` |
+| Validar Certificados | `./src/pages/validacao.html` |
 
 ---
 
 ## Controle de Acesso por Role
 
-Cada página respeita o perfil (`localStorage.perfil`) salvo no login:
+O perfil do usuário é salvo em `localStorage.perfil` após o login e controlado pelo `main.js`.
 
 | Classe CSS | Visível para |
 |---|---|
 | `.only-admin` | Apenas `admin` |
 | `.only-coordenador-admin` | `admin` e `coordenador` |
-| `.only-aluno` | Apenas `aluno` |
 
-O `main.js` controla automaticamente a visibilidade de elementos com essas classes.
+### Páginas por perfil
 
----
-
-## Páginas por Perfil
-
-| Página | admin | coordenador | aluno |
-|---|---|---|---|
-| Dashboard (métricas) | ✅ | ✅ | ✅ (básico) |
-| Listar / Cadastrar Alunos | ✅ | ✅ | ❌ |
-| Listar / Cadastrar Coordenadores | ✅ | ❌ | ❌ |
-| Vincular Curso | ✅ | ❌ | ❌ |
-| Cursos | ✅ | ✅ (ver) | ❌ |
-| Regras de Curso | ✅ | ❌ | ❌ |
-| Validação de Certificados | ✅ | ✅ (seus cursos) | ✅ (ver) |
-| Upload de Certificado | ❌ | ❌ | ✅ |
-| Relatórios | ✅ | ✅ | ❌ |
-| Logs | ✅ | ❌ | ❌ |
+| Página | admin | coordenador |
+|---|---|---|
+| Dashboard (métricas) | ✅ | ✅ |
+| Listar / Cadastrar Alunos | ✅ | ✅ |
+| Listar / Cadastrar Coordenadores | ✅ | ❌ |
+| Vincular Curso | ✅ | ❌ |
+| Cursos | ✅ | ✅ (somente leitura) |
+| Regras de Curso | ✅ | ❌ |
+| Validação de Certificados | ✅ | ✅ (seus cursos) |
+| Relatórios | ✅ | ✅ |
+| Logs | ✅ | ❌ |
 
 ---
 
-## Funcionalidades Implementadas
+## Funcionalidades
 
 - ✅ Login com JWT (decodifica payload para obter role e nome)
 - ✅ Proteção de rotas (redireciona para login se não autenticado)
 - ✅ Dashboard com métricas reais da API + gráficos (Chart.js)
 - ✅ Listagem de alunos com progresso de horas por curso
 - ✅ Cadastro de aluno, coordenador e curso
-- ✅ **Vincular usuário a múltiplos cursos** (novo)
-- ✅ **CRUD completo de regras de atividade** por curso (novo)
+- ✅ Vincular usuário a múltiplos cursos
+- ✅ CRUD completo de regras de atividade por curso
 - ✅ Upload de certificado com seleção de regra/curso e validação de limite de horas
 - ✅ Validação de certificados em 3 abas (pendente / aprovado / recusado)
 - ✅ Relatórios com gráfico de evolução mensal e distribuição por área
-- ✅ **PWA** — instalável, funciona offline com assets em cache
+- ✅ Logs do sistema
+- ✅ PWA — instalável, funciona offline com assets em cache
 
 ---
 
 ## Integração com o Backend
 
-Toda comunicação com o backend está centralizada em `api.js`. As funções exportadas:
+Toda a comunicação com o backend está centralizada em `src/js/api.js`. Autenticação é feita via **Bearer Token** (JWT) enviado no header `Authorization` em todas as requisições protegidas.
+
+### Endpoints utilizados
 
 ```javascript
 // Auth
-login(email, senha)
+login(email, senha)                          // POST /api/auth/login
 
 // Usuários
-cadastrarUsuario(dados)
-vincularCurso({ id_usuario, id_curso })   // novo
-listarAlunos()
-listarCoordenadores()
+cadastrarUsuario(dados)                      // POST /api/usuarios/cadastrar
+vincularCurso({ id_usuario, id_curso })      // POST /api/usuarios/vincular-curso
+listarAlunos()                               // GET  /api/usuarios/listar_alunos
+listarCoordenadores()                        // GET  /api/usuarios/listar_coordenadores
 
 // Cursos
-cadastrarCurso(dados)
-listarCursos()
+cadastrarCurso(dados)                        // POST /api/cursos/cadastrar
+listarCursos()                               // GET  /api/cursos/listar
 
 // Regras
-listarRegras(cursoId?)
-criarRegra(dados)
-atualizarRegra(id, dados)
-excluirRegra(id)
+listarRegras(cursoId?)                       // GET  /api/regras/listar[?curso_id=]
+criarRegra(dados)                            // POST /api/regras/criar
+atualizarRegra(id, dados)                    // PUT  /api/regras/atualizar/:id
+excluirRegra(id)                             // DELETE /api/regras/excluir/:id
 
-// Submissões
-uploadCertificado(formData)
-listarSubmissoes(status?)
-validarSubmissao(id, dados)
+// Submissões / Certificados
+uploadCertificado(dados, arquivo)            // POST /api/certificados/upload (multipart)
+listarSubmissoes(status?)                    // GET  /api/submissoes/listar[?status=]
+validarSubmissao(id, dados)                  // PUT  /api/submissoes/validar/:id
 
 // Dashboard
-getDashboard()
+getDashboard()                               // GET  /api/relatorios/dashboard
 ```
->>>>>>> Stashed changes
+
+> Em caso de resposta `401 Unauthorized`, o token é removido do `localStorage` e o usuário é redirecionado para a tela de login automaticamente.

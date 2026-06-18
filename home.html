@@ -4,51 +4,111 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SIGAC</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="src/css/style.css">
+    <link rel="stylesheet" href="src/css/dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="manifest" href="manifest.json">
     <style>
-        html, body { height:100%; margin:0; overflow:hidden; }
-        body { display:flex; }
-        .sidebar { position:fixed; top:0; left:0; height:100vh; width:260px; }
-        iframe { margin-left:260px; width:calc(100% - 260px); height:100vh; border:none; display:block; }
+        html, body { height: 100%; margin: 0; overflow: hidden; }
+        body { display: flex; }
+        .sidebar { position: fixed; top: 0; left: 0; height: 100vh; width: 260px; z-index: 200; }
+        iframe { margin-left: 260px; width: calc(100% - 260px); height: 100vh; border: none; display: block; }
+
+        /* --- Botão hamburguer (só aparece em mobile) --- */
+        .btn-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 300;
+            background: #0a2540;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            width: 42px;
+            height: 42px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        /* --- Overlay escuro atrás da sidebar em mobile --- */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 150;
+        }
+
+        /* --- Mobile: sidebar escondida por padrão --- */
+        @media (max-width: 768px) {
+            .btn-menu-toggle {
+                display: flex;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .sidebar-overlay.open {
+                display: block;
+            }
+
+            iframe {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body class="dashboard-body">
-    <aside class="sidebar">
+
+    <!-- Botão hamburguer (visível só em mobile) -->
+    <button class="btn-menu-toggle" id="btnMenuToggle" aria-label="Abrir menu">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <!-- Overlay para fechar o menu ao clicar fora -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <h2 class="logo-main" style="color:white;font-size:1.8rem;">SIGAC</h2>
         </div>
         <nav class="menu">
-            <a href="dashboard.html" target="conteudo">
+            <a href="src/pages/dashboard.html" target="conteudo">
                 <i class="fa-solid fa-house"></i> Início
             </a>
-            <a href="listar-alunos.html" target="conteudo">
+            <a href="src/pages/listar-alunos.html" target="conteudo">
                 <i class="fa-solid fa-users"></i> Alunos
             </a>
-            <a href="listar-coordenadores.html" target="conteudo" class="only-admin">
+            <a href="src/pages/listar-coordenadores.html" target="conteudo" class="only-admin">
                 <i class="fa-solid fa-user-tie"></i> Coordenadores
             </a>
-            <a href="listar-cursos.html" target="conteudo">
+            <a href="src/pages/listar-cursos.html" target="conteudo">
                 <i class="fa-solid fa-graduation-cap"></i> Cursos
             </a>
-            <a href="vincular-curso.html" target="conteudo" class="only-admin">
+            <a href="src/pages/vincular-curso.html" target="conteudo" class="only-admin">
                 <i class="fa-solid fa-link"></i> Vincular Curso
             </a>
-            <a href="regras-curso.html" target="conteudo" class="only-admin">
+            <a href="src/pages/regras-curso.html" target="conteudo" class="only-admin">
                 <i class="fa-solid fa-book"></i> Regras de Curso
             </a>
-            <a href="validacao.html" target="conteudo">
+            <a href="src/pages/validacao.html" target="conteudo">
                 <i class="fa-solid fa-check-to-slot"></i> Validação
             </a>
-            <a href="upload-certificado.html" target="conteudo" class="only-aluno">
-                <i class="fa-solid fa-file-arrow-up"></i> Enviar Certificado
-            </a>
-            <a href="relatorios.html" target="conteudo" class="only-coordenador-admin">
+            <a href="src/pages/relatorios.html" target="conteudo" class="only-coordenador-admin">
                 <i class="fa-solid fa-chart-pie"></i> Relatórios
             </a>
-            <a href="logs.html" target="conteudo" class="only-admin">
+            <a href="src/pages/logs.html" target="conteudo" class="only-admin">
                 <i class="fa-solid fa-file-alt"></i> Logs
             </a>
             <a href="index.html" class="logout" onclick="localStorage.clear()">
@@ -57,9 +117,40 @@
         </nav>
     </aside>
 
-    <iframe name="conteudo" src="dashboard.html"></iframe>
+    <iframe name="conteudo" src="src/pages/dashboard.html"></iframe>
 
-    <!-- main.js cuida de todo o controle de acesso por role -->
-    <script src="main.js"></script>
+    <script src="src/js/main.js"></script>
+    <script>
+        // Lógica do menu mobile
+        const btnToggle = document.getElementById('btnMenuToggle');
+        const sidebar   = document.getElementById('sidebar');
+        const overlay   = document.getElementById('sidebarOverlay');
+
+        function abrirMenu() {
+            sidebar.classList.add('open');
+            overlay.classList.add('open');
+            btnToggle.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+        }
+
+        function fecharMenu() {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('open');
+            btnToggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
+        }
+
+        btnToggle.addEventListener('click', () => {
+            sidebar.classList.contains('open') ? fecharMenu() : abrirMenu();
+        });
+
+        // Fecha ao clicar no overlay
+        overlay.addEventListener('click', fecharMenu);
+
+        // Fecha ao clicar em qualquer link do menu (navega para a página)
+        document.querySelectorAll('.menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 768) fecharMenu();
+            });
+        });
+    </script>
 </body>
 </html>

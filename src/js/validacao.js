@@ -58,9 +58,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 <div class="cert-actions">
                     ${s.certificado_url ? `
-                        <button class="btn-view" data-url="${s.certificado_url}">
-                            <i class="fa-regular fa-eye"></i> Ver
-                        </button>
+                        <a class="btn-view" href="${s.certificado_url}" download target="_blank" rel="noopener">
+                            <i class="fa-solid fa-download"></i> Baixar certificado
+                        </a>
                     ` : ''}
 
                     ${(s.status === 'pendente' && podValidar) ? `
@@ -81,12 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
         listaCertificados.addEventListener('click', async (e) => {
             const btn = e.target.closest('button');
             if (!btn) return;
-
-            // Ver arquivo
-            if (btn.classList.contains('btn-view')) {
-                window.open(btn.dataset.url, '_blank');
-                return;
-            }
 
             const id = Number(btn.dataset.id);
 

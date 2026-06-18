@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGAC - Gestão de Cursos</title>
+    <link rel="stylesheet" href="../../src/css/style.css">
+    <link rel="stylesheet" href="../../src/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="manifest" href="../../manifest.json">
+</head>
+<body class="dashboard-body">
+    <main class="content">
+        <header class="top-bar" style="display:flex;justify-content:space-between;align-items:center;">
+            <div>
+                <h1>Cursos</h1>
+                <p>Gerencie os cursos oferecidos pela instituição.</p>
+            </div>
+            <button class="btn-access only-admin"
+                onclick="window.location.href='cadastrar-curso.html'"
+                style="margin:0;width:auto;padding:12px 25px;">
+                <i class="fa-solid fa-plus"></i> Novo Curso
+            </button>
+        </header>
+
+        <section class="main-table" style="margin-top:30px;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome do Curso</th>
+                        <th>Carga Horária Total</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="listaCursos">
+                    <tr><td colspan="4" style="text-align:center;padding:20px;">Carregando...</td></tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script src="../../src/js/main.js"></script>
+    <script type="module">
+        import { listarCursos } from '../../src/js/api.js';
+
+        async function carregar() {
+            const tbody = document.getElementById('listaCursos');
+            try {
+                const data = await listarCursos();
+                if (!data.cursos || data.cursos.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Nenhum curso cadastrado.</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = data.cursos.map(c => `
+                    <tr>
+                        <td>${c.id}</td>
+                        <td>${c.nome}</td>
+                        <td>${c.carga_horaria}h</td>
+                        <td><i class="fa-solid fa-pen-to-square" style="cursor:pointer;" title="Editar"></i></td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#dc2626;">${err.message}</td></tr>`;
+            }
+        }
+
+        carregar();
+    </script>
+</body>
+</html>

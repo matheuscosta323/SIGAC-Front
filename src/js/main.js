@@ -1,5 +1,3 @@
-// main.js — Lógica compartilhada entre as páginas
-
 document.addEventListener('DOMContentLoaded', () => {
     const perfil = localStorage.getItem('perfil');
     const nomeUsuario = localStorage.getItem('nomeUsuario');
@@ -16,11 +14,11 @@ document.addEventListener('DOMContentLoaded', () => {
         'listar-cursos.html', 'listar-coordenadores.html',
         'cadastrar-aluno.html', 'cadastrar-coordenador.html',
         'cadastrar-curso.html', 'validacao.html', 'vincular-curso.html',
-        'regras-curso.html', 'relatorios.html', 'upload-certificado.html', 'logs.html'
+        'regras-curso.html', 'relatorios.html', 'logs.html'
     ];
     const paginaAtual = window.location.pathname.split('/').pop() || 'index.html';
     if (paginasProtegidas.includes(paginaAtual) && !localStorage.getItem('token')) {
-        window.location.href = 'index.html';
+        window.location.href = '../../index.html';
         return;
     }
 
@@ -33,56 +31,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Registrar Service Worker (PWA)
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js').catch(() => {});
+        navigator.serviceWorker.register('../../sw.js').catch(() => {});
     }
 });
 
-/**
- * Controla a visibilidade dos elementos por role.
- * Usa setAttribute style inline para sobrescrever o CSS base (display:none).
- *
- * Classes esperadas no HTML:
- *   .only-admin            → visível só para admin
- *   .only-coordenador-admin → visível para admin e coordenador
- *   .only-aluno            → visível só para aluno
- */
+//Controla visibilidade por role.
+//   .only-admin 
+//   .only-coordenador-admin
+
 function aplicarControleDeAcesso(perfil) {
-    // --- helper: mostrar e esconder via style inline ---
-    function mostrar(selector, displayValue = 'flex') {
-        document.querySelectorAll(selector).forEach(el => {
-            el.style.display = displayValue;
-        });
+    function mostrar(selector) {
+        document.querySelectorAll(selector).forEach(el => { el.style.display = 'flex'; });
     }
     function esconder(selector) {
-        document.querySelectorAll(selector).forEach(el => {
-            el.style.display = 'none';
-        });
+        document.querySelectorAll(selector).forEach(el => { el.style.display = 'none'; });
     }
-
-    // Zera tudo (o CSS já esconde .only-admin e .only-coordenador-admin por padrão)
     esconder('.only-admin');
     esconder('.only-coordenador-admin');
-    esconder('.only-aluno');
 
     if (perfil === 'admin') {
         mostrar('.only-admin');
         mostrar('.only-coordenador-admin');
-        esconder('.only-aluno');
     } else if (perfil === 'coordenador') {
         esconder('.only-admin');
         mostrar('.only-coordenador-admin');
-        esconder('.only-aluno');
-    } else if (perfil === 'aluno') {
-        esconder('.only-admin');
-        esconder('.only-coordenador-admin');
-        mostrar('.only-aluno');
     }
 }
 
 // Logout global
 function logout() {
     localStorage.clear();
-    window.location.href = 'index.html';
+    window.location.href = '../../index.html';
 }
 
 // Exibe mensagem de feedback (sucesso ou erro) num elemento

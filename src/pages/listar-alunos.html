@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGAC - Alunos</title>
+    <link rel="stylesheet" href="../../src/css/style.css">
+    <link rel="stylesheet" href="../../src/css/dashboard.css">
+    <link rel="stylesheet" href="../../src/css/alunos.css">
+    <link rel="stylesheet" href="../../src/css/validacao.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="dashboard-body">
+    <main class="content">
+        <div class="header-container">
+            <h1>Gestão de Alunos</h1>
+            <p>Acompanhamento de horas complementares</p>
+            <div class="action-bar">
+                <button class="btn-outline">Exportar</button>
+                <button class="btn-outline"><i class="fa-solid fa-filter"></i> Filtros</button>
+                <button class="btn-access" onclick="window.location.href='cadastrar-aluno.html'"
+                    style="width:auto;margin:0;">
+                    <i class="fa-solid fa-plus" style="color:#fff;"></i> Novo Aluno
+                </button>
+            </div>
+        </div>
+
+        <div class="table-card">
+            <table class="students-table">
+                <thead>
+                    <tr>
+                        <th>ALUNO</th>
+                        <th>CURSO</th>
+                        <th>PROGRESSO</th>
+                        <th>STATUS</th>
+                        <th>AÇÕES</th>
+                    </tr>
+                </thead>
+                <tbody id="listaAlunos">
+                    <tr><td colspan="5" style="text-align:center;padding:20px;">Carregando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="../../src/js/main.js"></script>
+    <script type="module">
+        import { listarAlunos } from '../../src/js/api.js';
+
+        async function carregar() {
+            const tbody = document.getElementById('listaAlunos');
+            try {
+                const data = await listarAlunos();
+                if (!data.alunos || data.alunos.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;">Nenhum aluno cadastrado.</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = data.alunos.map(a => {
+                    const pct = Math.min(a.progresso, 100);
+                    const status = pct >= 100 ? 'Concluído' : 'Pendente';
+                    const cls = pct >= 100 ? 'pill-approved' : 'pill-pending';
+                    return `
+                        <tr>
+                            <td>
+                                <strong style="color:#0a2540;">${a.nome}</strong><br>
+                                <small style="color:#94a3b8;">Matrícula: ${a.matricula}</small>
+                            </td>
+                            <td>${a.curso}</td>
+                            <td>
+                                <div style="display:flex;flex-direction:column;gap:5px;">
+                                    <small>${a.horas_concluidas}/${a.total_horas}h</small>
+                                    <div style="background:#e5e7eb;height:8px;border-radius:8px;overflow:hidden;">
+                                        <div style="width:${pct}%;height:100%;background:#22c55e;transition:0.3s;"></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="pill ${cls}">${status}</span></td>
+                            <td><i class="fa-regular fa-eye" style="cursor:pointer;"></i></td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#dc2626;">${err.message}</td></tr>`;
+            }
+        }
+
+        carregar();
+    </script>
+</body>
+</html>

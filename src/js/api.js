@@ -1,12 +1,6 @@
-// ================================================
-// api.js — Camada de integração com o backend SIGAC
-// ================================================
+const API_BASE = 'https://sigac-back-6jy9.onrender.com/';
 
-const API_BASE = 'http://localhost:5000';
-
-// -----------------------------------------------
 // Helpers internos
-// -----------------------------------------------
 
 function getToken() {
     return localStorage.getItem('token');
@@ -36,9 +30,7 @@ async function handleResponse(res) {
     return data;
 }
 
-// -----------------------------------------------
-// AUTH
-// -----------------------------------------------
+// Autenticacao
 
 export async function login(email, senha) {
     const res = await fetch(`${API_BASE}/api/auth/login`, {
@@ -49,9 +41,7 @@ export async function login(email, senha) {
     return handleResponse(res);
 }
 
-// -----------------------------------------------
-// USUÁRIOS
-// -----------------------------------------------
+// Usuarios
 
 export async function cadastrarUsuario(dados) {
     const res = await fetch(`${API_BASE}/api/usuarios/cadastrar`, {
@@ -85,9 +75,7 @@ export async function listarCoordenadores() {
     return handleResponse(res);
 }
 
-// -----------------------------------------------
-// CURSOS
-// -----------------------------------------------
+// Cursos
 
 export async function cadastrarCurso(dados) {
     const res = await fetch(`${API_BASE}/api/cursos/cadastrar`, {
@@ -105,9 +93,7 @@ export async function listarCursos() {
     return handleResponse(res);
 }
 
-// -----------------------------------------------
-// REGRAS
-// -----------------------------------------------
+// Regras
 
 export async function listarRegras(cursoId = null) {
     const url = cursoId
@@ -143,9 +129,7 @@ export async function excluirRegra(id) {
     return handleResponse(res);
 }
 
-// -----------------------------------------------
-// SUBMISSÕES / CERTIFICADOS
-// -----------------------------------------------
+// Submissao e certificados
 
 export async function uploadCertificado(dados, arquivo) {
     const formData = new FormData();
@@ -180,9 +164,7 @@ export async function validarSubmissao(id, dados) {
     return handleResponse(res);
 }
 
-// -----------------------------------------------
-// RELATÓRIOS / DASHBOARD
-// -----------------------------------------------
+// dashboard
 
 export async function getDashboard() {
     const res = await fetch(`${API_BASE}/api/relatorios/dashboard`, {

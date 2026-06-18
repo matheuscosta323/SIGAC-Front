@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGAC - Dashboard</title>
+    <link rel="stylesheet" href="../../src/css/style.css">
+    <link rel="stylesheet" href="../../src/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="manifest" href="../../manifest.json">
+    <style>
+        .dash-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:20px; margin:30px 0; }
+        .dash-card { background:#fff; border-radius:12px; padding:20px; border:1px solid #e2e8f0; box-shadow:0 2px 10px rgba(0,0,0,.05); }
+        .dash-card .label { font-size:0.8rem; color:#64748b; font-weight:600; text-transform:uppercase; letter-spacing:.5px; margin-bottom:8px; display:flex; align-items:center; gap:8px; }
+        .dash-card .value { font-size:2.2rem; font-weight:700; color:#0a2540; font-family:'Playfair Display',serif; }
+        .dash-card.green .value { color:#059669; }
+        .dash-card.amber .value { color:#d97706; }
+        .dash-card.red .value { color:#dc2626; }
+        .chart-row { display:grid; grid-template-columns:1.5fr 1fr; gap:20px; margin-top:20px; }
+        .chart-box { background:#fff; border-radius:12px; padding:24px; border:1px solid #e2e8f0; }
+        .chart-box h3 { font-size:0.95rem; color:#0a2540; margin-bottom:16px; }
+        .recent-table { margin-top:20px; background:#fff; border-radius:12px; padding:24px; border:1px solid #e2e8f0; }
+        .recent-table h2 { font-family:'Playfair Display',serif; font-size:1.4rem; color:#0a2540; margin-bottom:16px; }
+        table { width:100%; border-collapse:collapse; }
+        th { text-align:left; color:#94a3b8; font-size:0.78rem; text-transform:uppercase; letter-spacing:.5px; padding:12px 16px; border-bottom:1px solid #f1f5f9; }
+        td { padding:16px; border-bottom:1px solid #f8fafc; font-size:0.9rem; color:#1e293b; }
+        .pill { padding:4px 12px; border-radius:20px; font-size:0.75rem; font-weight:700; }
+        .pill.pendente { background:#fef3c7; color:#92400e; }
+        .pill.aprovado { background:#ecfdf5; color:#059669; }
+        .pill.recusado { background:#fef2f2; color:#dc2626; }
+        @media(max-width:768px){ .chart-row{grid-template-columns:1fr;} }
+    </style>
+</head>
+<body class="iframe-body">
+    <main class="content">
+        <header class="top-bar">
+            <div class="user-welcome">
+                <h1>Painel de Controle</h1>
+                <p>Olá, <span id="nome-usuario-topo" style="font-weight:bold;color:#c19a6b;">Usuário</span></p>
+            </div>
+            <div class="avatar-circle"></div>
+        </header>
+
+        <!-- Cards de métricas -->
+        <section class="dash-grid" id="metricas-grid">
+            <div class="dash-card">
+                <div class="label"><i class="fa-solid fa-users"></i> Total de Alunos</div>
+                <div class="value" id="m-alunos">—</div>
+            </div>
+            <div class="dash-card amber">
+                <div class="label"><i class="fa-solid fa-clock"></i> Pendentes</div>
+                <div class="value" id="m-pendentes">—</div>
+            </div>
+            <div class="dash-card green">
+                <div class="label"><i class="fa-solid fa-check"></i> Aprovadas</div>
+                <div class="value" id="m-aprovadas">—</div>
+            </div>
+            <div class="dash-card red">
+                <div class="label"><i class="fa-solid fa-xmark"></i> Recusadas</div>
+                <div class="value" id="m-recusadas">—</div>
+            </div>
+            <div class="dash-card green">
+                <div class="label"><i class="fa-solid fa-arrow-trend-up"></i> Taxa de Aprovação</div>
+                <div class="value" id="m-taxa">—</div>
+            </div>
+            <div class="dash-card">
+                <div class="label"><i class="fa-solid fa-graduation-cap"></i> Horas Aprovadas</div>
+                <div class="value" id="m-horas">—</div>
+            </div>
+        </section>
+
+        <!-- Gráficos -->
+        <div class="chart-row">
+            <div class="chart-box">
+                <h3><i class="fa-solid fa-chart-line" style="color:#c19a6b;margin-right:8px;"></i>Evolução Mensal de Horas</h3>
+                <canvas id="chartEvolucao" height="200"></canvas>
+            </div>
+            <div class="chart-box">
+                <h3><i class="fa-solid fa-chart-pie" style="color:#c19a6b;margin-right:8px;"></i>Distribuição por Área</h3>
+                <canvas id="chartDistribuicao" height="200"></canvas>
+            </div>
+        </div>
+
+        <!-- Tabela de submissões pendentes -->
+        <section class="recent-table">
+            <h2>Solicitações Pendentes</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Aluno</th>
+                        <th>Curso</th>
+                        <th>Atividade</th>
+                        <th>Horas</th>
+                        <th>Status</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelaPendentes">
+                    <tr><td colspan="6" style="text-align:center;color:#64748b;">Carregando...</td></tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script src="../../src/js/main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <script type="module">
+        import { getDashboard, listarSubmissoes } from '../../src/js/api.js';
+
+        async function carregarDashboard() {
+            try {
+                const data = await getDashboard();
+                const m = data.metricas;
+
+                document.getElementById('m-alunos').textContent    = m.total_alunos ?? '0';
+                document.getElementById('m-pendentes').textContent  = m.total_pendentes ?? '0';
+                document.getElementById('m-aprovadas').textContent  = m.total_aprovadas ?? '0';
+                document.getElementById('m-recusadas').textContent  = m.total_recusadas ?? '0';
+                document.getElementById('m-taxa').textContent       = (m.taxa_aprovacao ?? 0) + '%';
+                document.getElementById('m-horas').textContent      = (m.total_horas_aprovadas ?? 0) + 'h';
+
+                // Gráfico de evolução mensal
+                const evolucao = data.evolucao_mensal || [];
+                new Chart(document.getElementById('chartEvolucao'), {
+                    type: 'line',
+                    data: {
+                        labels: evolucao.map(e => e.mes),
+                        datasets: [{
+                            label: 'Horas aprovadas',
+                            data: evolucao.map(e => e.horas),
+                            borderColor: '#c19a6b',
+                            backgroundColor: 'rgba(193,154,107,0.1)',
+                            tension: 0.4,
+                            fill: true,
+                            pointBackgroundColor: '#c19a6b'
+                        }]
+                    },
+                    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+                });
+
+                // Gráfico de distribuição por área
+                const dist = data.distribuicao_atividades || [];
+                new Chart(document.getElementById('chartDistribuicao'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: dist.map(d => d.area),
+                        datasets: [{
+                            data: dist.map(d => d.quantidade),
+                            backgroundColor: ['#0a2540','#c19a6b','#3b82f6','#10b981','#f59e0b','#ef4444']
+                        }]
+                    },
+                    options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } } }
+                });
+
+            } catch(err) {
+                // Usuário pode ser aluno — dashboard não disponível
+                console.warn('Dashboard:', err.message);
+            }
+        }
+
+        async function carregarPendentes() {
+            const tbody = document.getElementById('tabelaPendentes');
+            try {
+                const data = await listarSubmissoes('pendente');
+                const pendentes = (data.submissoes || []).slice(0, 10);
+                if (pendentes.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#64748b;">Nenhuma solicitação pendente.</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = pendentes.map(s => `
+                    <tr>
+                        <td><strong>${s.aluno_nome}</strong></td>
+                        <td>${s.curso_nome}</td>
+                        <td>${s.atividade_descricao}</td>
+                        <td>${s.carga_horaria_solicitada}h</td>
+                        <td><span class="pill ${s.status}">${s.status}</span></td>
+                        <td><a href="validacao.html" style="color:#0a2540;font-size:0.85rem;font-weight:600;">Validar →</a></td>
+                    </tr>
+                `).join('');
+            } catch(err) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#64748b;">${err.message}</td></tr>`;
+            }
+        }
+
+        carregarDashboard();
+        carregarPendentes();
+    </script>
+</body>
+</html>

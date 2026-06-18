@@ -1,7 +1,7 @@
 {
   "name": "SIGAC - Sistema de Gestão de Atividades Complementares",
   "short_name": "SIGAC",
-  "description": "Sistema de Gestão de Atividades Complementares para coordenadores, administradores e alunos.",
+  "description": "Painel administrativo para gestão de atividades complementares. Exclusivo para administradores e coordenadores.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -13,13 +13,13 @@
   "categories": ["education", "productivity"],
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "assets/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icon-512.png",
+      "src": "assets/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
@@ -29,14 +29,14 @@
     {
       "name": "Validar Certificados",
       "short_name": "Validar",
-      "url": "./validacao.html",
-      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+      "url": "./src/pages/validacao.html",
+      "icons": [{ "src": "assets/icons/icon-192.png", "sizes": "192x192" }]
     },
     {
-      "name": "Enviar Certificado",
-      "short_name": "Enviar",
-      "url": "./upload-certificado.html",
-      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "url": "./home.html",
+      "icons": [{ "src": "assets/icons/icon-192.png", "sizes": "192x192" }]
     }
   ]
 }

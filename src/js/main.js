@@ -37,14 +37,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-/**
- * Controla visibilidade por role.
- * Apenas admin e coordenador acessam o painel.
- *
- * Classes:
- *   .only-admin             → visível só para admin
- *   .only-coordenador-admin → visível para admin e coordenador
- */
+//Controla visibilidade por role.
+//   .only-admin 
+//   .only-coordenador-admin
+
 function aplicarControleDeAcesso(perfil) {
     function mostrar(selector) {
         document.querySelectorAll(selector).forEach(el => { el.style.display = 'flex'; });
@@ -52,8 +48,6 @@ function aplicarControleDeAcesso(perfil) {
     function esconder(selector) {
         document.querySelectorAll(selector).forEach(el => { el.style.display = 'none'; });
     }
-
-    // Esconde tudo por padrão — mostra só o que o perfil permite
     esconder('.only-admin');
     esconder('.only-coordenador-admin');
 
@@ -64,7 +58,6 @@ function aplicarControleDeAcesso(perfil) {
         esconder('.only-admin');
         mostrar('.only-coordenador-admin');
     }
-    // perfil 'aluno' não existe mais neste painel — nada é mostrado
 }
 
 // Logout global

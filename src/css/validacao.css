@@ -86,6 +86,26 @@
     border-color: #fee2e2;
 }
 
+.btn-view {
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s;
+    background: #eff6ff;
+    color: #2563eb;
+    border-color: #dbeafe;
+    text-decoration: none;
+}
+
+.btn-view:hover {
+    background: #dbeafe;
+}
+
 /* Ajuste fino para títulos e textos dentro do card */
 .cert-card h3 {
     color: #0a2540;

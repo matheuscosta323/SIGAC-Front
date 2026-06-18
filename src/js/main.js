@@ -1,5 +1,3 @@
-// main.js — Lógica compartilhada entre as páginas
-
 document.addEventListener('DOMContentLoaded', () => {
     const perfil = localStorage.getItem('perfil');
     const nomeUsuario = localStorage.getItem('nomeUsuario');
